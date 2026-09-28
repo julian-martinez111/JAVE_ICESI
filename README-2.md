@@ -27,7 +27,7 @@
 ### 2. El variance swap: definición, replicación y sesgos
 # Estructura, Mecánica y Liquidación
 
-Un *variance swap* es un contrato forward sobre la varianza anualizada de un activo subyacente específico. Su pago al vencimiento \$T\$ es lineal respecto a la varianza \[cite: 1\]:
+Un *variance swap* es un contrato forward sobre la varianza anualizada de un activo subyacente específico. Su pago al vencimiento \$T\$ es lineal respecto a la varianza:
 
 \$\$\\text{Payoff} \= (\\sigma\_{R}^{2} \- K\_{\\text{var}}) \\times N\_{\\text{vol}}\$\$
 
