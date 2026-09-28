@@ -25,16 +25,6 @@
 
 
 ### 2. El variance swap: definición, replicación y sesgos
-# Introducción y Evolución Histórica
-
-La evolución teórica y práctica de los *variance swaps* (swaps de varianza) durante la década de 1990 estuvo impulsada por la necesidad institucional de negociar volatilidad pura sin el riesgo direccional inherente a las opciones con cobertura delta (*delta-hedged options*).
-
-* **El hito de Neuberger (1994):** Demostró analíticamente que la varianza realizada podía replicarse de forma perfecta mediante el rebalanceo continuo de una cobertura delta sobre un "contrato logarítmico" (*log contract*), un instrumento cuyo pago es igual al logaritmo del precio del activo \[cite: 1\].  
-* **El teorema de replicación de Carr y Madan (1998):** Dado que los contratos logarítmicos puros no se negocian directamente en los mercados organizados, Carr y Madan demostraron matemáticamente que cualquier pago dos veces continuamente diferenciable (incluyendo el pago logarítmico) puede replicarse estáticamente utilizando un portafolio estandarizado de opciones europeas de compra (*calls*) y venta (*puts*) \[cite: 1\].  
-* **Formalización de Goldman Sachs (1999):** El grupo de Estrategias Cuantitativas de Goldman Sachs (Demeterfi, Derman, Kamal y Zou) unificó estos conceptos en una metodología estándar para la industria, sentando las bases matemáticas que hoy en día soportan la modernización del índice VIX de la CBOE \[cite: 1\].
-
----
-
 # Estructura, Mecánica y Liquidación
 
 Un *variance swap* es un contrato forward sobre la varianza anualizada de un activo subyacente específico. Su pago al vencimiento \$T\$ es lineal respecto a la varianza \[cite: 1\]:
