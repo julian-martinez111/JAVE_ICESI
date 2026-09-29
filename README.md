@@ -160,157 +160,177 @@ Esta formulación demuestra de manera concluyente que la varianza se puede valor
 
 ---
 
+### Cierre de la derivación: aplicación a $f(S)=\ln S$
 
-#### 2.1 Contrato
-
-El Riesgo de Salto (Jump Risk): Teóricamente elegante, la discretización expone a las mesas de dinero a riesgos operativos y de modelo. Si el subyacente experimenta un gap de precios violento sobre una región donde no existen strikes de opciones líquidos, el strip discreto de  
-K 
-2
- 
-1
-​	
-  falla en replicar de forma perfecta el pago logarítmico, generando un error de seguimiento (tracking error) importante.
-Un variance swap paga al vencimiento
+Con $f(S)=\ln S$ se tiene $f''(K)=-1/K^2$, de modo que
 
 $$
-\text{Payoff}=N_{var}\,\big(RV-K_{var}\big),\qquad
-N_{var}=\frac{N_{vega}}{2\,\sqrt{K_{var}}},
+\ln\frac{S_T}{S_{\ast}}=\frac{S_T-S_{\ast}}{S_{\ast}}-\int_0^{S_{\ast}}\frac{(K-S_T)^+}{K^2}\,dK-\int_{S_{\ast}}^{\infty}\frac{(S_T-K)^+}{K^2}\,dK .
 $$
 
-con $RV$ y $K_{var}$ en unidades de varianza anualizada (en la convención de mercado, puntos de volatilidad al cuadrado). La varianza realizada *discreta* estándar es
+Al aplicar el operador de esperanza bajo $\mathbb{Q}$ se usan dos hechos: (i) $\mathbb{E}^{\mathbb{Q}}[S_T]=S_0e^{rT}$ y (ii) $\mathbb{E}^{\mathbb{Q}}\!\left[\int_0^T \frac{dS_t}{S_t}\right]=rT$. Además, el valor esperado no descontado de un pago de opción es su prima capitalizada, $e^{rT}P(K)$ o $e^{rT}C(K)$, donde $P(K)$ y $C(K)$ denotan las primas de las opciones *put* y *call* de *strike* $K$. Sustituyendo en (2) se llega a la fórmula de valoración general:
 
 $$
-RV=\frac{A}{n}\sum_{i=1}^{n}\Big(\ln\frac{S_{t_i}}{S_{t_{i-1}}}\Big)^2,\qquad A=252,
+K_{var} = \frac{2}{T} \left[ rT - \left( \frac{S_0}{S_{\ast}} e^{rT} - 1 \right) - \ln\left(\frac{S_{\ast}}{S_0}\right) + e^{rT} \int_0^{S_{\ast}} \frac{P(K)}{K^2} dK + e^{rT} \int_{S_{\ast}}^\infty \frac{C(K)}{K^2} dK \right] \tag{3}
 $$
 
-**sin restar la media** (convención de mercado), sobre cierres diarios. Los ajustes por dividendos y por "días de mercado" varían según la confirmación del contrato. El swap es una posición larga en varianza si el comprador recibe $RV$ y paga $K_{var}$.
-
-Propiedades que motivan su uso (Demeterfi et al., 1999; Bossu, Strasser y Guichard, 2005):
-
-* La varianza es **aditiva** en el tiempo; la volatilidad no.
-* El **dollar gamma** de la tira de replicación es constante: $\Gamma=\frac{2}{TS^2}$, de modo que $S^2\Gamma=2/T$ para cualquier $S$.
-* El vega en varianza decae linealmente: $\partial V/\partial\sigma^2=\tau/T$ con $\tau=T-t$.
-* Valor de mercado en $t$ (contrato ya iniciado):
+Si se elige $S_{\ast}=F_0=S_0e^{rT}$ (el *forward*), todos los términos no integrales se cancelan y queda la forma limpia de Britten-Jones y Neuberger (2000):
 
 $$
-V_t=e^{-r(T-t)}\,N_{var}\Big[\tfrac{t}{T}\,RV_{0,t}+\tfrac{T-t}{T}\,K_{t,T}-K_{var}\Big],
+K_{var}=\frac{2}{T}\,e^{rT}\left[\int_0^{F_0}\frac{P(K)}{K^2}\,dK+\int_{F_0}^{\infty}\frac{C(K)}{K^2}\,dK\right] \tag{4}
 $$
 
-donde $K_{t,T}$ es el strike *forward* vigente.
+(Con un dividendo continuo $q$, se reemplaza $rT$ por $(r-q)T$ en el primer término y $F_0=S_0e^{(r-q)T}$.)
 
-#### 2.2 Del contrato a la esperanza
-
-Bajo $\mathbb{Q}$, con tasas deterministas, $K_{var}=\mathbb{E}^{\mathbb{Q}}[RV]$ (ignorando el descuento del pago único). La cuestión es **qué versión de $RV$**: (i) la variación cuadrática continua $[X]_T/T$, (ii) la suma discreta de cuadrados de log-retornos, (iii) la cantidad replicable por opciones. Bajo difusión pura las tres coinciden; con saltos no.
-
-#### 2.3 Replicación estática (Neuberger, Dupire, Carr–Madan)
-
-**Paso 1 (identidad de Itô).** Con trayectorias continuas, $d\ln S=\frac{dS}{S}-\frac12\sigma^2dt$, luego
-
-$$
-\int_0^T\sigma_t^2\,dt=2\Big(\int_0^T\frac{dS_t}{S_t}-\ln\frac{S_T}{S_0}\Big).
-$$
-
-La integral estocástica corresponde a una posición **dinámica** de $2/S_t$ acciones (delta-hedge en futuros); el segundo término es un **contrato logarítmico** (*log contract*).
-
-**Paso 2 (spanning de Carr–Madan).** Para cualquier $S^*>0$,
-
-$$
-\ln\frac{S_T}{S^*}=\frac{S_T-S^*}{S^*}-\int_0^{S^*}\frac{(K-S_T)^+}{K^2}\,dK-\int_{S^*}^{\infty}\frac{(S_T-K)^+}{K^2}\,dK .
-$$
-
-**Paso 3 (esperanza bajo $\mathbb{Q}$).** Con $\mathbb{E}[\int dS/S]=(r-q)T$ y opciones OTM $P(K),C(K)$ con precios *de hoy*:
-
-$$
-\boxed{K_{var}(S^*)=\frac{2}{T}\Big[(r-q)T-\Big(\frac{F_0}{S^*}-1\Big)-\ln\frac{S^*}{S_0}+e^{rT}\!\int_0^{S^*}\!\frac{P(K)}{K^2}dK+e^{rT}\!\int_{S^*}^{\infty}\!\frac{C(K)}{K^2}dK\Big]}
-$$
-
-Esta es la expresión general de Demeterfi et al. (1999) escrita con dividendos. **Al elegir $S^*=F_0$ todos los términos no integrales se cancelan** y queda la forma limpia (Britten-Jones y Neuberger, 2000):
-
-$$
-\boxed{K_{var}=\frac{2}{T}\,e^{rT}\Big[\int_0^{F_0}\frac{P(K)}{K^2}\,dK+\int_{F_0}^{\infty}\frac{C(K)}{K^2}\,dK\Big]}
-$$
-
-> **Nota sobre la fórmula del planteamiento original.** Si se escribe la versión con $-\ln(S_0/F_0)$ y sin el factor $e^{rT}$ ni el término lineal, esa expresión solo es correcta bajo supuestos particulares ($r=q=0$ o $S^*=F_0$ con los términos ya cancelados). Usar la forma anterior evita errores de $O(rT)$, que en vencimientos de 5–10 días son pequeños pero no nulos, y errores de $O(\text{dividendos})$ si hay ex-date en la ventana.
-
-#### 2.4 Discretización y truncamiento con strikes de mercado
-
-Con strikes discretos $K_1<\dots<K_m$, la versión operativa (tipo VIX) es
-
-$$
-K_{var}\approx\frac{2}{T}\sum_{i=1}^m\frac{\Delta K_i}{K_i^2}\,e^{rT}Q(K_i)-\frac1T\Big(\frac{F_0}{K_0}-1\Big)^2,
-$$
-
-donde $Q(K_i)$ es la opción OTM (put si $K_i<K_0$, call si $K_i>K_0$; promedio en $K_0$), $K_0$ es el mayor strike $\le F_0$ y $\Delta K_i=\frac{K_{i+1}-K_{i-1}}{2}$.
-
-Fuentes de error (Jiang y Tian, 2005, 2007):
-
-1. **Truncamiento:** la cadena real no llega a $K\to0,\infty$. Se subestima $K_{var}$; más grave con salto grande de earnings (colas gordas).
-2. **Discretización:** malla $\Delta K$ gruesa en near-expiry.
-3. **Ruido de precios:** *bid-ask* ancho en wings de vencimientos semanales.
-
-**Práctica recomendada:** (a) interpolar/extrapolar la volatilidad implícita (SVI o splines en delta/log-moneyness, con extrapolación plana en los wings; Gatheral–Jacquier, 2014; Fengler, 2009), (b) reconstruir precios OTM sobre una malla fina con Black–Scholes y (c) integrar numéricamente. Reportar $K_{var}$ con y sin extrapolación como análisis de robustez.
-
-**Varianza realizada discreta bajo un modelo.** Con retornos de paso $\Delta_i$,
-
-$$
-\mathbb{E}[RV]=\frac{A}{n}\sum_{i=1}^n\mathbb{E}\big[R_i^2\big],\qquad \mathbb{E}[R_i^2]=-\varphi_{R_i}''(0)=\operatorname{Var}(R_i)+\mathbb{E}[R_i]^2,
-$$
-
-que puede calcularse por derivación (analítica o numérica) de la función característica del retorno de paso. Broadie y Jain (2008) muestran que el efecto de la discretización es típicamente pequeño, mientras que el efecto de los saltos puede ser significativo.
-
-#### 2.5 Resultado clave: el sesgo de replicación por saltos
-
-Con saltos, la tira de opciones replica
-
-$$
-K^{\text{repl}}=\frac{2}{T}\,\mathbb{E}^{\mathbb{Q}}\Big[\int_0^T\frac{dS_t}{S_{t^-}}-\ln\frac{S_T}{S_0}\Big],
-$$
-
-mientras que la variación cuadrática del log-precio es
-
-$$
-K^{QV}=\frac1T\,\mathbb{E}^{\mathbb{Q}}\big[[X]_T\big]=\frac1T\,\mathbb{E}^{\mathbb{Q}}\Big[\int_0^T\sigma_t^2dt+\sum_{s\le T}(\Delta X_s)^2\Big].
-$$
-
-**Diferencia pathwise.** Como $\ln S_T/S_0=\int dS/S-\tfrac12\int\sigma^2dt-\sum\big(e^{\Delta X}-1-\Delta X\big)$,
-
-$$
-[X]_T-2\Big(\int\tfrac{dS}{S}-\ln\tfrac{S_T}{S_0}\Big)=-2\sum_{s\le T}\Big(e^{\Delta X_s}-1-\Delta X_s-\tfrac12\Delta X_s^2\Big)\approx-\tfrac13\sum_{s\le T}(\Delta X_s)^3 .
-$$
-
-**Consecuencia:**
-
-$$
-\boxed{K^{\text{repl}}-K^{QV}=2\lambda\,\mathbb{E}\Big[e^{J}-1-J-\tfrac12J^2\Big]\approx\tfrac{\lambda}{3}\,\mathbb{E}[J^3]}
-$$
-
-* Si los saltos son **negativos en media** ($\mu_J<0$, típico: ajuste bajista en EA), $\mathbb{E}[J^3]<0$ y $K^{\text{repl}}<K^{QV}$: el strike model-free **subestima** la varianza cuadrática esperada.
-* El sesgo es de tercer orden en el tamaño del salto: se dispara con saltos grandes como los de earnings.
-* En un modelo de saltos **el swap (que paga $RV$ discreta) vale $\approx K^{QV}$, no $K^{\text{repl}}$**. Por eso el análisis debe reportar ambos y no mezclar definiciones al comparar modelo vs. mercado.
-
-Este punto es tratado sistemáticamente por Broadie y Jain (2008) y Carr y Lee (2009); Jarrow, Kchia, Larsson y Protter (2013) estudian la aproximación de la versión discreta por su límite continuo.
-
-#### 2.6 Variance swap vs. volatility swap (convexidad)
-
-Como $\sqrt{\cdot}$ es cóncava, por Jensen $\mathbb{E}[\sqrt{RV}]<\sqrt{\mathbb{E}[RV]}$ y, a segundo orden,
-
-$$
-K_{vol}\approx\sqrt{K_{var}}-\frac{\operatorname{Var}(RV)}{8\,K_{var}^{3/2}} .
-$$
-
-Con saltos, $\operatorname{Var}(RV)$ es muy grande y esta aproximación puede fallar (Broadie y Jain, 2008); el análisis del proyecto se centra en varianza, que es replicable, y en $\sqrt{K_{var}}$ solo como unidad de reporte en puntos de volatilidad.
-
-#### 2.7 Varianza *forward* (calendar) e implicaciones para earnings
-
-Por aditividad, entre dos vencimientos $T_1<T_2$:
-
-$$
-K_{T_1,T_2}=\frac{T_2K_{T_2}-T_1K_{T_1}}{T_2-T_1}.
-$$
-
-Es la herramienta model-free para leer la **estructura temporal de varianza** y localizar el salto de varianza que introduce el EA (§5).
+Esta formulación demuestra que, **si el precio tiene trayectorias continuas**, la varianza se puede valorar y replicar estáticamente comprando un *strip* infinito de opciones OTM (fuera del dinero) de *puts* y *calls*, ponderadas exactamente por el inverso del cuadrado de su *strike* ($\frac{1}{K^2}$). La sección siguiente muestra qué se rompe cuando esa hipótesis falla.
 
 ---
+
+## Límite de la réplica: saltos
+
+### ¿Qué varianza paga realmente el contrato?
+
+Hay tres objetos que bajo difusión pura coinciden, pero con saltos no:
+
+1. la variación cuadrática continua del log-precio, $[X]_T/T$ con $X_t=\ln S_t$;
+2. la suma discreta de cuadrados de log-retornos diarios (lo que el contrato paga, con $A=252$ y sin restar la media);
+3. la cantidad que replica la tira de opciones, $\frac{2}{T}\left(\int_0^T \frac{dS_t}{S_{t^-}}-\ln\frac{S_T}{S_0}\right)$.
+
+La suma discreta (2) converge a $[X]_T/T$ (1) al refinar el muestreo, y su diferencia es típicamente pequeña (Broadie y Jain, 2008). El punto crítico es la diferencia entre (1) y (3).
+
+### Dinámica con saltos e identidad trayectoria por trayectoria
+
+Se extiende el modelo con saltos de actividad finita. Bajo $\mathbb{Q}$,
+
+$$
+\frac{dS_t}{S_{t^-}}=(r-\lambda\kappa)\,dt+\sigma_t\,dW_t+\left(e^{J}-1\right)dN_t,\qquad \kappa=\mathbb{E}[e^{J}-1],
+$$
+
+donde $N_t$ es un proceso de Poisson de intensidad $\lambda$ y $J$ es el salto del log-precio. El término $-\lambda\kappa\,dt$ compensa los saltos, de modo que $\mathbb{E}^{\mathbb{Q}}\!\left[\int_0^T \frac{dS_t}{S_{t^-}}\right]=rT$ sigue valiendo.
+
+Aplicando Itô con saltos, en cada instante de salto el log-precio cambia en $\Delta X=J$ mientras que $S$ cambia en $e^{\Delta X}-1$ en términos relativos. Por tanto
+
+$$
+\ln\frac{S_T}{S_0}=\int_0^T\frac{dS_t}{S_{t^-}}-\frac12\int_0^T\sigma_t^2\,dt-\sum_{s\le T}\left(e^{\Delta X_s}-1-\Delta X_s\right).
+$$
+
+La cantidad que replica la tira de opciones es $R_T:=2\left(\int_0^T \frac{dS_t}{S_{t^-}}-\ln\frac{S_T}{S_0}\right)$, y la variación cuadrática es $[X]_T=\int_0^T\sigma_t^2dt+\sum_{s\le T}(\Delta X_s)^2$. Restando:
+
+$$
+R_T-[X]_T=2\sum_{s\le T} g(\Delta X_s),\qquad g(x):=e^{x}-1-x-\tfrac12x^2 .
+$$
+
+La función $g$ tiene $g(0)=g'(0)=g''(0)=0$ y $g'''(x)=e^{x}>0$, de donde:
+
+* $g(x)=\tfrac16x^3+\tfrac1{24}x^4+\cdots\approx\tfrac16x^3$ para saltos moderados (el error es de **tercer orden**);
+* $g(x)$ tiene siempre el **mismo signo que $x$**: un salto bajista siempre resta, uno alcista siempre suma.
+
+### El sesgo de replicación
+
+Tomando esperanza bajo $\mathbb{Q}$ (con $\mathbb{E}\sum g(\Delta X_s)=\lambda T\,\mathbb{E}[g(J)]$):
+
+$$
+\boxed{K^{\text{repl}}-K^{QV}=2\lambda\,\mathbb{E}\!\left[e^{J}-1-J-\tfrac12J^2\right]\approx\frac{\lambda}{3}\,\mathbb{E}[J^3]}
+$$
+
+donde $K^{\text{repl}}=\mathbb{E}^{\mathbb{Q}}[R_T]/T$ es el valor que entrega la tira de opciones en las ecuaciones (3)-(4) (depende solo de precios de opciones observados) y $K^{QV}=\mathbb{E}^{\mathbb{Q}}\big[[X]_T\big]/T$ es la esperanza de la varianza que el contrato paga en el límite de muestreo fino.
+
+**Lectura.**
+
+* Si los saltos son negativos en media, $\mathbb{E}[J^3]<0$ y $K^{\text{repl}}<K^{QV}$: el *strike* *model-free* de las ecuaciones (3)-(4) **subestima** la varianza cuadrática esperada.
+* Lo que el swap paga es $\approx K^{QV}$, **no** $K^{\text{repl}}$. Al comparar modelo contra mercado hay que reportar ambas cantidades y no mezclar definiciones.
+* Para quien vende el swap y se cubre con la réplica, el descalce es $R_T-[X]_T$: pierde con saltos bajistas y gana con alcistas, con un efecto cúbico en el tamaño del salto. Es consistente con lo que señalan Carr y Lee (2009) sobre la exposición de estos contratos a retornos al cubo y de orden superior en movimientos bruscos.
+* El resultado no es una curiosidad teórica: Broadie y Jain (2008) encuentran que el efecto del muestreo discreto suele ser pequeño mientras que el de los saltos puede ser significativo. Carr, Lee y Lorig (2021) desarrollan réplicas robustas para difusiones con saltos de actividad finita y tamaño acotado.
+
+### Dos fuentes de error que no deben mezclarse
+
+1. **Sesgo por saltos (conceptual).** Ocurre aunque existiera una cadena continua de *strikes* $K\in(0,\infty)$: la réplica de la ecuación (2) deja de ser exacta trayectoria por trayectoria.
+2. **Truncamiento y discretización de la cadena (operativo).** Si el subyacente hace un *gap* sobre una región sin *strikes* líquidos, o la cadena real no llega a $K\to0,\infty$, el *strip* discreto tampoco replica bien el contrato logarítmico. Esto ocurre incluso bajo difusión pura, y es peor cuando hay un salto grande (colas gordas) y vencimientos cortos.
+
+---
+
+## Varianza forward y estructura temporal
+
+Como la varianza (no la volatilidad) es aditiva en el tiempo, la varianza total esperada $w(T):=T\,K_T$ es aditiva y, entre dos vencimientos $T_1<T_2$, el *strike* de un swap con inicio a futuro es
+
+$$
+K_{T_1,T_2}=\frac{T_2K_{T_2}-T_1K_{T_1}}{T_2-T_1}=\frac{w(T_2)-w(T_1)}{T_2-T_1}.
+$$
+
+Se replica comprando un variance swap a $T_2$ con nocional en varianza $\frac{T_2}{T_2-T_1}$ y vendiendo uno a $T_1$ con nocional $\frac{T_1}{T_2-T_1}$: la diferencia de pagos es $RV_{T_1,T_2}-K_{T_1,T_2}$. Es la herramienta *model-free* para leer la **estructura temporal de varianza** y localizar en el calendario dónde se concentra la varianza esperada.
+
+---
+
+## Saltos genéricos vs. saltos de earnings
+
+La sección de saltos supone que estos llegan en instantes aleatorios (Poisson). Un anuncio de resultados (*earnings announcement*, EA) es distinto: la **fecha $\tau$ se conoce con antelación**, aunque no se conozca la respuesta del precio. Esto cambia qué se puede identificar y cómo se lee el sesgo.
+
+### Descomposición unificada
+
+Sea $J_c$ el salto genérico (Poisson, intensidad $\lambda_c$) y $J_{EA}$ el salto programado en la fecha $\tau$. Para un vencimiento $T$:
+
+$$
+T\,K^{QV}_T=\underbrace{\int_0^T \mathbb{E}^{\mathbb{Q}}[\sigma_t^2]\,dt}_{\text{difusión}}+\underbrace{\lambda_c T\,\mathbb{E}[J_c^2]}_{\text{saltos genéricos}}+\underbrace{\mathbb{1}_{\{\tau\le T\}}\,\mathbb{E}[J_{EA}^2]}_{\text{earnings}}
+$$
+
+y la tira de opciones entrega lo mismo más el sesgo de la sección anterior:
+
+$$
+T\,K^{\text{repl}}_T=T\,K^{QV}_T+2\lambda_cT\,\mathbb{E}[g(J_c)]+2\,\mathbb{1}_{\{\tau\le T\}}\,\mathbb{E}[g(J_{EA})].
+$$
+
+Para el salto programado desaparece $\lambda T$: es un único evento en fecha conocida, con $g(x)=e^x-1-x-\tfrac12x^2$ como antes. Su sesgo en unidades anualizadas es
+
+$$
+K^{\text{repl}}_T-K^{QV}_T\Big|_{EA}=\frac{2}{T}\,\mathbb{E}[g(J_{EA})]\approx\frac{1}{3T}\,\mathbb{E}[J_{EA}^3].
+$$
+
+Como el swap discreto mide retornos diarios, el salto de earnings queda contenido en **un solo retorno** (el del cierre previo a la apertura posterior al anuncio) y entra completo, con su $J_{EA}^2$, en la varianza realizada.
+
+### Comparación conceptual
+
+| | Salto genérico (Poisson) | Salto de earnings (programado) |
+|---|---|---|
+| Momento | Aleatorio, intensidad $\lambda_c$ | Fecha $\tau$ conocida |
+| Tamaño | Aleatorio; típicamente sesgo negativo (riesgo de caída) | Aleatorio y grande; signo *a priori* incierto |
+| Aporte a $K^{QV}$ | $\lambda_c\,\mathbb{E}[J_c^2]$, repartido de forma uniforme en el horizonte | $\mathbb{E}[J_{EA}^2]/T$, concentrado en una fecha |
+| Sesgo de la réplica | $2\lambda_c\,\mathbb{E}[g(J_c)]$ | $\tfrac{2}{T}\,\mathbb{E}[g(J_{EA})]$ |
+| Cómo se identifica con opciones | Solo vía *smile* (asimetría y curtosis), mezclado con la difusión | Vía estructura temporal: escalón de varianza entre vencimientos que rodean a $\tau$ |
+| Efecto observable | Suaviza la superficie | La volatilidad implícita sube antes del anuncio y cae al conocerse; estructura temporal decreciente a corto plazo |
+
+La consecuencia central: **el salto de earnings se puede aislar con la estructura temporal de varianza** (sección anterior) mientras que el salto genérico solo se distingue de la difusión a través de la forma del *smile*. La literatura de earnings aprovecha esto: Dubinsky, Johannes, Kaeck y Seeger (2019) separan la incertidumbre del anuncio de la volatilidad diaria normal comparando volatilidad antes y después del anuncio o usando la estructura temporal de volatilidades implícitas.
+
+### Extracción del salto de earnings con la varianza forward
+
+Sea $T_1<\tau<T_2$ y sea $\bar v$ la varianza forward "base" (sin evento), estimada por ejemplo interpolando las varianzas forward de las ventanas contiguas que no contienen $\tau$. Como $w^{QV}(T_2)-w^{QV}(T_1)=(T_2-T_1)\bar v+\mathbb{E}[J_{EA}^2]$:
+
+$$
+\mathbb{E}^{\mathbb{Q}}[J_{EA}^2]\approx(T_2-T_1)\left(K^{\text{repl}}_{T_1,T_2}-\bar v\right)-\underbrace{2\,\mathbb{E}[g(J_{EA})]}_{\approx\,\mathbb{E}[J_{EA}^3]/3}
+$$
+
+El último término corrige el sesgo de replicación cuando $K_{T_1,T_2}$ se calcula con las ecuaciones (3)-(4); si la ventana es corta, este salto domina el resultado. Esta es una medida bajo $\mathbb{Q}$, por lo que incluye la prima de riesgo por el salto: no es directamente la esperanza física del movimiento.
+
+### Magnitud del sesgo (ilustración con cálculo propio)
+
+El sesgo relativo al aporte del salto a la varianza es $\;2\,\mathbb{E}[g(J)]\,/\,\mathbb{E}[J^2]$, independiente de $T$:
+
+| Caso | Sesgo relativo |
+|---|---|
+| Earnings simétrico con $\sigma_J=6\%$ y asimetría $-0.5$ (aprox. cúbica: $\text{asim.}\cdot\sigma_J/3$) | $\approx -1.0\%$ |
+| Salto fijo $J=-10\%$ | $\approx -3.3\%$ |
+| Salto fijo $J=-20\%$ | $\approx -6.3\%$ |
+
+Lo que sí depende de $T$ es cuánto pesa el salto en el *strike*: entra como $\mathbb{E}[J^2]/T$. Por ejemplo, con $T=10$ días hábiles ($10/252$), un salto de earnings con $\mathbb{E}[J_{EA}^2]=(6\%)^2$ suma $\approx0.091$ en varianza, de modo que un *strike* de 25% de volatilidad base pasa a $\approx39\%$; el sesgo por asimetría en ese caso es del orden de $0.1$ puntos de volatilidad.
+
+### Implicaciones para el análisis
+
+1. **El salto de earnings entra completo en lo que paga el swap** ($\mathbb{E}[J_{EA}^2]$), y la tira de opciones lo captura, salvo por el error de tercer orden $\tfrac{1}{3T}\mathbb{E}[J_{EA}^3]$. En vencimientos cortos que contienen el anuncio, el componente de earnings domina el *strike* y el sesgo relativo, aunque pequeño en porcentaje, deja de ser despreciable en términos absolutos.
+2. **Los saltos genéricos y los de earnings no deben mezclarse** en el modelo: los primeros se estiman con el *smile*, los segundos con el escalón de varianza en la estructura temporal.
+3. **Reportar siempre** $K^{\text{repl}}$ (lo que dan las opciones) y $K^{QV}$ (lo que paga el swap bajo el modelo), con y sin extrapolación de las colas, para separar el sesgo por saltos del error operativo de truncamiento.
+4. Para vencimientos que **no** contienen el anuncio ($T<\tau$) el término de earnings es cero y la fórmula (4) es una buena aproximación salvo por los saltos genéricos.
+
+---
+
 
 ### 3. Modelo de Merton (jump-diffusion)
 
