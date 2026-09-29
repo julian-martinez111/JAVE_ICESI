@@ -22,7 +22,7 @@
 
 ---
 
-### 1. El variance swap: definición, replicación y sesgos
+# 1. El variance swap: definición, replicación y sesgos
 
 ## Estructura, Mecánica y Liquidación
 
