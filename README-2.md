@@ -25,93 +25,95 @@
 
 
 ### 2. El variance swap: definición, replicación y sesgos
-# Estructura, Mecánica y Liquidación
+# Fundamentos Teóricos y de Valoración de los Variance Swaps: Del Lema de Itô al CBOE VIX
 
-Un *variance swap* es un contrato forward sobre la varianza anualizada de un activo subyacente específico. Su pago al vencimiento \$T\$ es lineal respecto a la varianza:
-
-\$\$\\text{Payoff} \= (\\sigma\_{R}^{2} \- K\_{\\text{var}}) \\times N\_{\\text{vol}}\$\$
-
-Donde \$\\sigma\_{R}^{2}\$ representa la varianza realizada del activo durante la vida del contrato, \$K\_{\\text{var}}\$ es el strike de varianza y \$N\_{\\text{vol}}\$ es el valor nocional por punto de varianza.
-
-> **Implicación de liquidación (Settlement al vencimiento):** Los *variance swaps* se liquidan únicamente al vencimiento (estilo europeo). Si el contrato se liquidara diariamente (*mark-to-market* diario), la parte compradora enfrentaría un severo problema de convexidad. Como la varianza realizada se calcula como un promedio de rendimientos al cuadrado en todo el periodo, un día de alta volatilidad al inicio forzaría un pago masivo que podría no estar justificado si el resto del periodo presenta una volatilidad cercana a cero. La liquidación al vencimiento garantiza que se capture el promedio real independiente de la trayectoria (*path-independent*).
+**Autor:** Julián Andrés Martínez Ortiz  
+**Fecha:** 2026-09-28  
 
 ---
 
-# Varianza vs. Volatilidad Pura
+## Estructura, Mecánica y Liquidación
 
-Aunque comercialmente se suelen ofrecer como "apuestas de volatilidad pura", esto es impreciso: son instrumentos de **varianza pura** (\$\\sigma^2\$). La razón fundamental por la cual los mercados operan varianza en lugar de volatilidad es una propiedad matemática clave: **la aditividad** \[cite: 1\].
+Un *variance swap* es un contrato forward sobre la varianza anualizada de un activo subyacente específico. Su pago al vencimiento $T$ es lineal respecto a la varianza realizada[cite: 2]:
 
-1. **La varianza es aditiva:** La varianza acumulada en un mes es la suma de las varianzas diarias. Por ende, la acumulación diaria de varianza realizada se puede compensar perfectamente con la acumulación diaria y lineal de pérdidas y ganancias (P\&L) de una posición accionaria con cobertura delta \[cite: 1\].  
-2. **La volatilidad no es aditiva:** La raíz cuadrada de una suma no es igual a la suma de las raíces cuadradas. Replicar un swap de volatilidad verdadero requiere un pago no lineal sobre la varianza acumulada, exponiendo al creador de mercado (*dealer*) a la temida "volatilidad de la volatilidad" (*vol-of-vol*) \[cite: 1\].
+$$\text{Payoff} = (\sigma_{R}^{2} - K_{\text{var}}) \times N_{\text{vol}}$$
+
+Donde $\sigma_{R}^{2}$ denota la varianza realizada del activo subyacente durante el horizonte temporal del contrato, $K_{\text{var}}$ representa el *strike* de varianza implícita y $N_{\text{vol}}$ corresponde al valor nocional expresado en unidades monetarias por punto de varianza[cite: 2].
+
+### Implicación de liquidación (Settlement al vencimiento)
+Los *variance swaps* se liquidan exclusivamente al vencimiento bajo una estructura de liquidación de estilo europeo[cite: 2]. Si la arquitectura contractual exigiera un rebalanceo diario (*mark-to-market* diario), la contraparte compradora incurriría en una asimetría severa. Dado que la varianza realizada se computa mediante el sumatorio cuadrático de los rendimientos discretos normalizados, un choque de volatilidad extremo localizado al inicio del periodo contractual induciría un flujo de caja instantáneo desproporcionado que invalidaría la consistencia de cobertura ante escenarios de reversión a la media subsiguientes. Por consiguiente, la liquidación única al vencimiento garantiza una métrica *path-independent* (invariante a la trayectoria temporal) del promedio cuadrático de la volatilidad instantánea[cite: 2].
 
 ---
 
-# Derivación Matemática Explícita del Strike de Varianza
+## Varianza vs. Volatilidad Pura
 
-El objetivo de esta sección es encontrar el precio de entrega justo (\$K\_{\\text{var}}\$), el cual, por la teoría de precios de no-arbitraje, debe ser igual al valor esperado neutral al riesgo de la varianza realizada \[cite: 1\].
+Si bien la comercialización de estos derivados suele catalogarse de manera informal como "exposición a volatilidad pura", la taxonomía financiera correcta los define como instrumentos de varianza pura ($\sigma^2$)[cite: 1, 2]. La adopción institucional de la varianza en detrimento de la volatilidad directa responde al siguiente axioma matemático fundamental[cite: 1, 2]:
 
-## El Proceso de Precios Continuo
+* **Aditividad de la varianza:** La varianza acumulada en un horizonte temporal agregado equivale estrictamente a la sumatoria de las varianzas fraccionales de sus subintervalos constituyentes. Esta propiedad permite que la acumulación continua de varianza realizada sea perfectamente replicable y compensada de manera lineal con el P&L de una estrategia de cobertura delta sobre el subyacente[cite: 1, 2].
+* **No aditividad de la volatilidad:** El operador matemático de la raíz cuadrada no es distributiva sobre la sumatoria. En consecuencia, la replicación de un swap de volatilidad exigiría un perfil de pagos no lineal sobre la varianza agregada, exponiendo al creador de mercado (*dealer*) a un riesgo de segundo orden de alta complejidad conocido como *vol-of-vol* (volatilidad de la volatilidad)[cite: 1, 2].
 
-El precio de una acción sigue un movimiento browniano geométrico. Esto significa que el precio se mueve por dos fuerzas: una parte “ordenada” o promedio (\$\\mu\$), y otra parte aleatoria (\$\\sigma\_t dW\_t\$) que representa el ruido del mercado. Matemáticamente lo escriben como el retorno porcentual del activo, es decir, \$\\frac{dS\_t}{S\_t}\$, porque en finanzas importa más cuánto cambia en porcentaje que en dólares absolutos.
+---
 
-Donde \$\\mu\_t\$ es la deriva (*drift*), \$\\sigma\_t\$ es la volatilidad estocástica instantánea y \$dW\_t\$ es un proceso de Wiener estándar \[cite: 1\]. La varianza realizada anualizada \$V\$ se define como \[cite: 1\]:
+## Derivación Matemática del Strike de Varianza ($K_{\text{var}}$)
 
-\$\$V \= \\frac{1}{T}\\int\_{0}^{T}\\sigma\_{t}^{2}dt\$\$
+El objetivo central de la modelización cuantitativa consiste en determinar el precio de ejercicio justo ($K_{\text{var}}$), el cual, bajo condiciones de ausencia de arbitraje, debe igualar la expectativa matemática de la varianza realizada bajo la medida neutral al riesgo[cite: 2].
 
-## Aplicación del Lema de Itô y Transformación Logarítmica
+### El Proceso de Precios Continuo
+Se asume que la trayectoria del precio del subyacente $S_t$ sigue un movimiento browniano geométrico bajo la medida histórica, expresado estocásticamente en términos de su retorno instantáneo[cite: 1, 2]:
 
-Luego el objetivo de la investigación cuantitativa es encontrar una manera de expresar la volatilidad realizada (*realized variance*) usando únicamente movimientos observables del precio en el mercado. El problema es que la volatilidad \$\\sigma\_t\$ no se observa directamente en el mercado; lo único observable es el precio de la acción. Por eso buscan una transformación matemática que haga aparecer el término \$\\sigma\_t^2\$, que es la varianza instantánea.
+$$\frac{dS_t}{S_t} = \mu_t dt + \sigma_t dW_t$$
 
-Para lograrlo usan el logaritmo del precio, \$\\ln(S\_t)\$. Esto no es casualidad: el logaritmo y sus dos derivadas hacen que, al aplicarle el Lema de Itô, aparezca automáticamente un término relacionado con la volatilidad. Cuando aplican Itô al logaritmo del precio, sustituyendo las derivadas del logaritmo y expandiendo el \$(dS\_t)^2\$ para obtener:
+Donde $\mu_t$ denota el *drift*, $\sigma_t$ representa la volatilidad instantánea y $dW_t$ corresponde al incremento de un proceso de Wiener estándar[cite: 1, 2]. La varianza realizada anualizada $V$ se formaliza como[cite: 2]:
 
-\$\$\\mu\_t^2 S\_t^2 (dt)^2 \+ 2\\mu\_t \\sigma\_t S\_t^2 dt , dW\_t \+ \\sigma\_t^2 S\_t^2 (dW\_t)^2\$\$
+$$V = \frac{1}{T}\int_{0}^{T}\sigma_{t}^{2}dt$$
 
-y cancelar los dos primeros términos utilizando las reglas fundamentales del cálculo estocástico, obtenemos una función que simboliza el retorno porcentual menos un ajuste de volatilidad. Ese ajuste es precisamente \$-\\frac{1}{2}\\sigma\_t^2 dt\$, y aparece gracias al término cuadrático del movimiento browniano, es decir, porque en cálculo estocástico \$(dW\_t)^2 \= dt\$.
+### Aplicación del Lema de Itô y Transformación Logarítmica
+El desafío de esta valoración radica en aislar la varianza instantánea $\sigma_t^2$ utilizando únicamente variables de mercado observables (en este caso, el precio spot del activo)[cite: 2]. Puesto que $\sigma_t$ no es una variable directamente observable en el mercado, se recurre a una transformación logarítmica mediante la aplicación del Lema de Itô sobre la función $f(S_t) = \ln(S_t)$[cite: 2].
 
-> **Nota sobre el cálculo estocástico:** Recordemos que \$(dW\_t)^2 \= dt\$ porque el movimiento browniano se comporta de una manera muy distinta a una función normal y suave. En cálculo tradicional, cuando haces un cambio muy pequeño \$dx\$, su cuadrado \$(dx)^2\$ es muchísimo más pequeño todavía, así que se cancela de la expansión de Taylor. Pero el Browniano no cambia “suavemente”; cambia de forma extremadamente zigzagueante y rugosa. Sus pequeños movimientos aleatorios son mucho más grandes de lo que intuitivamente esperarías para intervalos de tiempo diminutos. La clave está en cómo escala el movimiento browniano. Un incremento browniano en un intervalo muy pequeño \$dt\$ no tiene tamaño proporcional a \$dt\$, sino proporcional a la raíz cuadrada del tiempo: \$dW\_t \\sim \\sqrt{dt}\$. Al elevar esta expresión al cuadrado, se cancela la raíz dejándonos con la expresión final (\$dt\$ \= un pequeño paso del tiempo \= diferencial del tiempo).
+Expandiendo el diferencial estocástico de la función logarítmica y agrupando los términos de orden superior, se obtiene el desarrollo diferencial[cite: 2]:
 
-Después reorganizan la ecuación para dejar sola la volatilidad. Ahí es donde ocurre la parte importante: consiguen escribir \$\\sigma\_t^2 dt\$ en función de cantidades relacionadas únicamente con el precio y su logaritmo.
+$$\mu_t^2 S_t^2 (dt)^2 + 2\mu_t \sigma_t S_t^2 dt \, dW_t + \sigma_t^2 S_t^2 (dW_t)^2$$
 
-Finalmente integran toda la expresión desde el tiempo inicial hasta el vencimiento \$T\$. Eso acumula toda la volatilidad a lo largo del periodo y produce la fórmula final de la *realized variance*. El resultado muestra que la varianza realizada puede replicarse usando dos componentes: una estrategia dinámica sobre la acción y una posición sobre un *payoff* logarítmico.
+Al aplicar las reglas del cálculo estocástico para cancelar los términos de mayor orden, se simplifica la expresión obteniendo el retorno porcentual menos un ajuste por convexidad de $-\frac{1}{2}\sigma_t^2 dt$[cite: 2].
+
+> **Nota explicativa sobre el cálculo estocástico empleado:**  
+> La identidad del cálculo de Itô $(dW_t)^2 = dt$ difiere del cálculo clásico porque los incrementos del movimiento browniano son tan impredecibles y rápidos que su variación cuadrática en un intervalo pequeño no se anula, sino que converge exactamente al paso del tiempo $dt$[cite: 2].
+
+Reorganizando la ecuación resultante, se aísla el término de la varianza $\sigma_t^2 dt$[cite: 2]. Tras integrar la expresión a lo largo del intervalo $[0, T]$, se demuestra que la varianza realizada se refleja exactamente manteniendo una posición en acciones rebalanceada continuamente (manteniendo siempre $\frac{1}{S_t}$ acciones) y tomando una posición corta estática en un instrumento que pague $\ln\left(\frac{S_T}{S_0}\right)$[cite: 2]:
+
+$$V = \frac{2}{T}\left[\int_{0}^{T}\frac{dS_t}{S_t} - \ln\left(\frac{S_T}{S_0}\right)\right]$$
+
+---
 
 ## Esperanza Neutral al Riesgo y el Teorema de Carr-Madan
 
-Posteriormente, para encontrar un término negociable (*tradeable*) para el *payoff* logarítmico, se mueven a la llamada medida neutral al riesgo (\$\\mathbb{Q}\$). Esta es una herramienta muy usada en derivados porque simplifica el *pricing*. Bajo esta medida, se asume que el activo crece en promedio a la tasa libre de riesgo \$r\$. La idea no es que el mundo real funcione exactamente así, sino que bajo esa medida matemática los derivados pueden valorarse como expectativas descontadas. Entonces el *strike* justo del *variance swap* se define como la esperanza neutral al riesgo de la *realized variance* futura.
+Para encontrar un instrumento negociable en el mercado que sea equivalente al pago logarítmico, la valoración se traslada al marco de la probabilidad neutral al riesgo ($\mathbb{Q}$)[cite: 2]. Bajo esta medida, el activo subyacente crece en promedio a la tasa libre de riesgo $r$, permitiendo descontar flujos esperados a valor presente sin sesgos de preferencias de riesgo subjetivas[cite: 2]. Así, el *strike* teórico del *variance swap* se define como[cite: 2]:
 
-Entonces el *paper* introduce el teorema de replicación de Carr-Madan. La idea central del teorema es que prácticamente cualquier *payoff* suficientemente suave puede construirse combinando muchas opciones *vanilla* europeas de distintos *strikes*. Matemáticamente utilizan una expansión tipo Taylor con integrales, donde cualquier función puede descomponerse en una parte lineal (que se replica con caja, bonos, futuros o *forwards* del subyacente) más una combinación continua e infinita de *calls* y *puts*.
+$$K_{\text{var}} = \mathbb{E}^{\mathbb{Q}}\left[ \frac{1}{T}\int_{0}^{T}\sigma_{t}^{2}dt \right]$$
 
-* La fórmula general de Carr-Madan descompone cualquier función \$f(S\_T)\$ en cuatro partes. La primera parte es un término constante, \$f(S\_*)\$, que simplemente representa el valor de la función en un punto de referencia arbitrario llamado \$S\_*\$, que en la práctica suele ser el precio del *forward* del activo. La segunda parte es un término lineal, \$f'(S\_*)(S\_T \- S\_*)\$, que puede replicarse fácilmente utilizando *forwards* o futuros porque depende linealmente del precio del activo.  
-* Las otras dos partes son las más importantes. Una integral utiliza *puts* europeas y la otra utiliza *calls* europeas. Esto ocurre porque los términos \$(K \- S\_T)^+\$ y \$(S\_T \- K)^+\$ son exactamente los *payoffs* de *puts* y *calls* respectivamente. De esta manera, cualquier curvatura o convexidad de la función puede reconstruirse usando opciones distribuidas sobre todos los *strikes* posibles.
+Para eliminar la necesidad de negociar contratos logarítmicos sintéticos, se implementa el teorema de replicación estática desarrollado por Peter Carr y Dilip Madan (1998)[cite: 1, 2]. Este teorema demuestra que cualquier pago dos veces diferenciable $f(S_T)$ puede descomponerse analíticamente mediante una expansión de Taylor ponderada sobre una cadena infinita de opciones europeas *vanilla* (*calls* y *puts*)[cite: 1, 2].
 
-Financieramente, esto significa que la volatilidad futura implícita puede extraerse observando precios de muchas opciones diferentes. No basta con mirar una sola opción *ATM*; es necesario integrar información proveniente de toda la superficie de volatilidad. Por eso los *variance swaps* y productos como el VIX utilizan una gran cantidad de *strikes* simultáneamente.
+### Desglose analítico del Teorema de Carr-Madan[cite: 2]:
+* **Término de posición constante:** $f(S_*)$, evaluado en un precio de referencia preestablecido $S_*$ (usualmente fijado como el precio *forward* vigente del activo)[cite: 2].
+* **Término de exposición lineal:** $f'(S_*)(S_T - S_*)$, el cual se neutraliza estructuralmente mediante una posición estática en contratos *forward* o futuros sobre el subyacente[cite: 2].
+* **Componentes convexos de opciones:** Son los términos más relevantes y están representados por dos integrales: una que utiliza opciones *put* europeas y otra que utiliza opciones *call* europeas. Esto se debe a que las expresiones $(K - S_T)^+$ y $(S_T - K)^+$ corresponden exactamente a los pagos (*payoffs*) de las *puts* y las *calls*, respectivamente[cite: 2].
 
-Al aplicar esperanza bajo la medida neutral al riesgo (utilizan probabilidades neutrales al riesgo para los precios del mercado), el precio esperado futuro del activo es:
+Al aplicar el operador de esperanza matemática bajo la medida neutral al riesgo, el valor esperado del subyacente satisface[cite: 2]:
 
-\$\$\\mathbb{E}^{\\mathbb{Q}}\[S\_T\] \= S\_0 e^{rT}\$\$
+$$\mathbb{E}^{\mathbb{Q}}[S_T] = S_0 e^{rT}$$
 
-Ahora ya no aparecen los *payoffs* \$(K \- S\_T)^+\$ o \$(S\_T \- K)^+\$, sino directamente los precios de las opciones hoy:
+Sustituyendo las integrales de los pagos de opciones por sus respectivas valoraciones descontadas (donde $P(K)$ y $C(K)$ denotan las primas de las opciones *put* y *call* para un *strike* $K$), se llega a la fórmula de valoración general[cite: 1, 2]:
 
-* \$P(K)\$: precio de *puts*  
-* \$C(K)\$: precio de *calls*
+$$K_{\text{var}} = \frac{2}{T}\left[ rT - \left(\frac{S_0}{S_*}e^{rT} - 1\right) - \ln\left(\frac{S_*}{S_0}\right) + e^{rT}\int_{0}^{S_{*}}\frac{P(K)}{K^{2}}dK + e^{rT}\int_{S_*}^{\infty}\frac{C(K)}{K^{2}}dK \right]$$
 
-Esto ocurre porque al tomar esperanza neutral al riesgo, el valor esperado descontado de un *payoff* es precisamente el precio actual de la opción \[cite: 1\].
-
-Evaluando la expansión en torno a un precio de referencia \$S\_\*\$, se llega a la fórmula analítica final de valoración \[cite: 1\]:
-
-\$\$K\_{\\text{var}} \= \\frac{2}{T}\\left\[ rT \- \\left(\\frac{S\_0}{S\_*}e^{rT} \- 1\\right) \- \\ln\\left(\\frac{S\_*}{S\_0}\\right) \+ e^{rT}\\int\_{0}^{S\_{*}}\\frac{P(K)}{K^{2}}dK \+ e^{rT}\\int\_{S\_*}^{\\infty}\\frac{C(K)}{K^{2}}dK \\right\]\$\$
-
-Esta formulación demuestra que **la varianza se puede valorar y replicar estáticamente comprando un *strip* infinito de opciones OTM (fuera del dinero) de *puts* y *calls*, ponderadas exactamente por el inverso del cuadrado de su *strike* (\$\\frac{1}{K^2}\$)** \[cite: 1\].
+Esta formulación demuestra de manera concluyente que la varianza se puede valorar y replicar estáticamente comprando un *strip* infinito de opciones OTM (fuera del dinero) de *puts* y *calls*, ponderadas exactamente por el inverso del cuadrado de su *strike* ($\frac{1}{K^2}$)[cite: 1, 2].
 
 ---
 
-# Discretización Práctica y el CBOE VIX
+## Referencias
 
-En la práctica de mercado, una integral continua de opciones es inviable debido a que las opciones solo se negocian en intervalos de *strikes* discretos. Los creadores de mercado deben aproximar la integral continua mediante una sumatoria discreta \$\\sum \\Delta K\$ \[cite: 1\]:
-
-\$\$K\_{\\text{var}} \\approx \\frac{2}{T}\\left\[ rT \- \\left(\\frac{S\_0}{S\_*}e^{rT} \- 1\\right) \- \\ln\\left(\\frac{S\_*}{S\_0}\\right) \+ e^{rT}\\sum\_{i}\\frac{\\Delta K\_i}{K\_i^2}Q(K\_i) \\right\]\$\$
-
-* **El Motor del Índice VIX:** Esta sumatoria discreta es el motor matemático detrás del índice VIX de la CBOE. La metodología evalúa un amplio abanico de opciones sobre el S\&P 500, ponderando el precio medio de cada opción por \$\\frac{1}{K^2}\$ sobre un horizonte constante de 30 días, aplicando la raíz cuadrada para expresarlo como un porcentaje de volatilidad implícita anualizada \[cite: 1\].  
-* **El Riesgo de Salto (*Jump Risk*):** Teóricamente elegante, la discretización expone a las mesas de dinero a riesgos operativos y de modelo. Si el subyacente experimenta un *gap* de precios violento sobre una región donde no existen *strikes* de opciones líquidos, el *strip* discreto de \$\\frac{1}{K^2}\$ falla en replicar de forma perfecta el pago logarítmico, generando un error de seguimiento (*tracking error*) importante \[cite: 1\].
+1. Carr, Peter, and Dilip Madan. "Towards a Theory of Volatility Trading." *Volatility: New Estimation Techniques for Pricing Derivatives*, edited by R. Jarrow, 1998, pp. 417-427[cite: 1].
+2. Demeterfi, Kresimir, Emanuel Derman, Michael Kamal, and Joseph Zou. "More Than You Ever Wanted To Know About Volatility Swaps." *Goldman Sachs Quantitative Strategies Research Notes*, March 1999[cite: 1, 2].
 
 ---
 #### 2.1 Contrato
