@@ -50,21 +50,39 @@ $$V = \frac{1}{T}\int_{0}^{T}\sigma_{t}^{2}dt$$
 ### Aplicación del Lema de Itô y Transformación Logarítmica
 El desafío de esta valoración radica en aislar la varianza instantánea $\sigma_t^2$ utilizando únicamente variables de mercado observables (en este caso, el precio spot del activo). Puesto que $\sigma_t$ no es una variable directamente observable en el mercado, se recurre a una transformación logarítmica mediante la aplicación del Lema de Itô sobre la función $f(S_t) = \ln(S_t)$.
 
-Expandiendo el diferencial estocástico de la función logarítmica y agrupando los términos de orden superior, se obtiene el desarrollo diferencial:
+Para aislar este término del proceso del precio del activo, partimos de las derivadas de la función: $f'(S) = \frac{1}{S}$ y $f''(S) = -\frac{1}{S^2}$, las cuales permiten cancelar el término $S^2$ al aplicar el lema de Itô:
 
-$$\mu_t^2 S_t^2 (dt)^2 + 2\mu_t \sigma_t S_t^2 dt \, dW_t + \sigma_t^2 S_t^2 (dW_t)^2$$
+$$d(\ln S_t) = f'(S_t)dS_t + \frac{1}{2}f''(S_t)(dS_t)^2$$
 
-Al aplicar las reglas del cálculo estocástico para cancelar los términos de mayor orden, se simplifica la expresión obteniendo el retorno porcentual menos un ajuste por convexidad de $-\frac{1}{2}\sigma_t^2 dt$.
+Desarrollando el término $(dS_t)^2$ a partir del movimiento browniano geométrico del precio:
+
+$$(dS_t)^2 = (\mu_t S_t \, dt + \sigma_t S_t \, dW_t)^2$$
+$$(dS_t)^2 = \mu_t^2 S_t^2 (dt)^2 + 2\mu_t \sigma_t S_t^2 dt \, dW_t + \sigma_t^2 S_t^2 (dW_t)^2$$
+
+Al aplicar las reglas del cálculo estocástico para cancelar los términos de mayor orden:
+
+$$(dt)^2 = 0, \quad dW_t \, dt = 0, \quad (dW_t)^2 = dt$$
+
+Obtenemos el desarrollo diferencial del término cuadrático:
+
+$$(dS_t)^2 = \sigma_t^2 S_t^2 \, dt$$
 
 > **Nota explicativa sobre el cálculo estocástico empleado:**  
 > La identidad del cálculo de Itô $(dW_t)^2 = dt$ difiere del cálculo clásico porque los incrementos del movimiento browniano son tan impredecibles y rápidos que su variación cuadrática en un intervalo pequeño no se anula, sino que converge exactamente al paso del tiempo $dt$.
 
-Reorganizando la ecuación resultante, se aísla el término de la varianza $\sigma_t^2 dt$. Tras integrar la expresión a lo largo del intervalo $[0, T]$, se demuestra que la varianza realizada se refleja exactamente manteniendo una posición en acciones rebalanceada continuamente (manteniendo siempre $\frac{1}{S_t}$ acciones) y tomando una posición corta estática en un instrumento que pague $\ln\left(\frac{S_T}{S_0}\right)$:
+Sustituyendo todo en la ecuación original del lema de Itô:
 
-$$V = \frac{2}{T}\left[\int_{0}^{T}\frac{dS_t}{S_t} - \ln\left(\frac{S_T}{S_0}\right)\right]$$
+$$d(\ln S_t) = \frac{1}{S_t}dS_t - \frac{1}{2}\left(\frac{1}{S_t^2}\right)(\sigma_t^2 S_t^2 \, dt)$$
+
+Simplificando la expresión, se obtiene el retorno porcentual menos un ajuste por convexidad de $-\frac{1}{2}\sigma_t^2 dt$:
+
+$$d(\ln S_t) = \frac{1}{S_t}dS_t - \frac{1}{2}\sigma_t^2 \, dt$$
 
 ---
 
+Reorganizando la ecuación resultante, se aísla el término de la varianza $\sigma_t^2 dt$. Tras integrar la expresión a lo largo del intervalo $[0, T]$, se demuestra que la varianza realizada se refleja exactamente manteniendo una posición en acciones rebalanceada continuamente (manteniendo siempre $\frac{1}{S_t}$ acciones) y tomando una posición corta estática en un instrumento que pague $\ln\left(\frac{S_T}{S_0}\right)$:
+
+$$V = \frac{2}{T}\left[\int_{0}^{T}\frac{dS_t}{S_t} - \ln\left(\frac{S_T}{S_0}\right)\right]$$
 ## Esperanza Neutral al Riesgo y el Teorema de Carr-Madan
 
 Para encontrar un instrumento negociable en el mercado que sea equivalente al pago logarítmico, la valoración se traslada al marco de la probabilidad neutral al riesgo ($\mathbb{Q}$). Bajo esta medida, el activo subyacente crece en promedio a la tasa libre de riesgo $r$, permitiendo descontar flujos esperados a valor presente sin sesgos de preferencias de riesgo subjetivas. Así, el *strike* teórico del *variance swap* se define como:
