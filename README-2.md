@@ -30,19 +30,7 @@ Un *variance swap* es un contrato forward sobre la varianza anualizada de un act
 
 $$\text{Payoff} = (\sigma_{R}^{2} - K_{\text{var}}) \times N_{\text{vol}}$$
 
-Donde $\sigma_{R}^{2}$ denota la varianza realizada del activo subyacente durante el horizonte temporal del contrato, $K_{\text{var}}$ representa el *strike* de varianza implícita y $N_{\text{vol}}$ corresponde al valor nocional expresado en unidades monetarias por punto de varianza.
-
-### Implicación de liquidación (Settlement al vencimiento)
-Los *variance swaps* se liquidan exclusivamente al vencimiento bajo una estructura de liquidación de estilo europeo. Si la arquitectura contractual exigiera un rebalanceo diario (*mark-to-market* diario), la contraparte compradora incurriría en una asimetría severa. Dado que la varianza realizada se computa mediante el sumatorio cuadrático de los rendimientos discretos normalizados, un choque de volatilidad extremo localizado al inicio del periodo contractual induciría un flujo de caja instantáneo desproporcionado que invalidaría la consistencia de cobertura ante escenarios de reversión a la media subsiguientes. Por consiguiente, la liquidación única al vencimiento garantiza una métrica *path-independent* (invariante a la trayectoria temporal) del promedio cuadrático de la volatilidad instantánea.
-
----
-
-## Varianza vs. Volatilidad Pura
-
-Si bien la comercialización de estos derivados suele catalogarse de manera informal como "exposición a volatilidad pura", la taxonomía financiera correcta los define como instrumentos de varianza pura ($\sigma^2$). La adopción institucional de la varianza en detrimento de la volatilidad directa responde al siguiente axioma matemático fundamental:
-
-* **Aditividad de la varianza:** La varianza acumulada en un horizonte temporal agregado equivale estrictamente a la sumatoria de las varianzas fraccionales de sus subintervalos constituyentes. Esta propiedad permite que la acumulación continua de varianza realizada sea perfectamente replicable y compensada de manera lineal con el P&L de una estrategia de cobertura delta sobre el subyacente.
-* **No aditividad de la volatilidad:** El operador matemático de la raíz cuadrada no es distributiva sobre la sumatoria. En consecuencia, la replicación de un swap de volatilidad exigiría un perfil de pagos no lineal sobre la varianza agregada, exponiendo al creador de mercado (*dealer*) a un riesgo de segundo orden de alta complejidad conocido como *vol-of-vol* (volatilidad de la volatilidad).
+Donde $\sigma_{R}^{2}$ denota la varianza realizada del activo subyacente durante el horizonte del contrato, $K_{\text{var}}$ representa el *strike* de varianza implícita y $N_{\text{vol}}$ corresponde al valor nocional expresado en unidades monetarias por punto de varianza.
 
 ---
 
@@ -85,10 +73,60 @@ $$K_{\text{var}} = \mathbb{E}^{\mathbb{Q}}\left[ \frac{1}{T}\int_{0}^{T}\sigma_{
 
 Para eliminar la necesidad de negociar contratos logarítmicos sintéticos, se implementa el teorema de replicación estática desarrollado por Peter Carr y Dilip Madan (1998). Este teorema demuestra que cualquier pago dos veces diferenciable $f(S_T)$ puede descomponerse analíticamente mediante una expansión de Taylor ponderada sobre una cadena infinita de opciones europeas *vanilla* (*calls* y *puts*).
 
-### Desglose analítico del Teorema de Carr-Madan:
-* **Término de posición constante:** $f(S_*)$, evaluado en un precio de referencia preestablecido $S_*$ (usualmente fijado como el precio *forward* vigente del activo).
-* **Término de exposición lineal:** $f'(S_*)(S_T - S_*)$, el cual se neutraliza estructuralmente mediante una posición estática en contratos *forward* o futuros sobre el subyacente.
-* **Componentes convexos de opciones:** Son los términos más relevantes y están representados por dos integrales: una que utiliza opciones *put* europeas y otra que utiliza opciones *call* europeas. Esto se debe a que las expresiones $(K - S_T)^+$ y $(S_T - K)^+$ corresponden exactamente a los pagos (*payoffs*) de las *puts* y las *calls*, respectivamente.
+### Desglose analítico del Teorema de Carr-Madan
+
+* **Término de posición constante:** 
+
+$$
+f(S_*)
+$$
+
+evaluado en un precio de referencia preestablecido $S_*$. Usualmente, $S_*$ se fija como el precio *forward* vigente del activo. Este término representa simplemente un valor constante que no depende del precio futuro $S_T$.
+
+* **Término de exposición lineal:**
+
+$$
+f'(S_{\ast})(S_T-S_{\ast})
+$$
+
+Este componente representa la parte lineal del payoff, ya que depende directamente de $S_T$. Debido a esta característica, puede replicarse mediante una posición estática en contratos *forward* o futuros sobre el activo subyacente.
+
+* **Componentes convexos de opciones:** Son los términos encargados de representar la curvatura del payoff y están dados por dos integrales.
+
+La primera corresponde a una combinación de opciones *put* europeas:
+
+$$
+\int_0^{S_*} f''(K)(K-S_T)^+\,dK
+$$
+
+La segunda corresponde a una combinación de opciones *call* europeas:
+
+$$
+\int_{S_*}^{\infty} f''(K)(S_T-K)^+\,dK
+$$
+
+Esto se debe a que:
+
+$$
+(K-S_T)^+
+$$
+
+es exactamente el *payoff* de una *put* europea, mientras que:
+
+$$
+(S_T-K)^+
+$$
+
+es exactamente el *payoff* de una *call* europea.
+
+Por lo tanto, la representación completa de Carr-Madan puede expresarse como:
+
+$$
+f(S_T) = f(S_{\ast}) + f'(S_{\ast})(S_T-S_{\ast}) + \int_0^{S_{\ast}} f''(K)(K-S_T)^+\,dK + \int_{S_{\ast}}^{\infty} f''(K)(S_T-K)^+\,dK
+$$
+
+En conjunto, la idea es que un payoff complejo puede descomponerse en una posición constante, una exposición lineal mediante *forwards* o futuros y una combinación de *puts* y *calls* con diferentes *strikes* para reproducir la curvatura del payoff.
+En conjunto, la idea es que un payoff complejo puede descomponerse en una posición constante, una exposición lineal mediante *forwards* o futuros y una combinación de *puts* y *calls* con diferentes *strikes* para reproducir la curvatura del payoff.
 
 Al aplicar el operador de esperanza matemática bajo la medida neutral al riesgo, el valor esperado del subyacente satisface:
 
