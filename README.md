@@ -152,7 +152,9 @@ $$\mathbb{E}^{\mathbb{Q}}[S_T] = S_0 e^{rT}$$
 
 Sustituyendo las integrales de los pagos de opciones por sus respectivas valoraciones descontadas (donde $P(K)$ y $C(K)$ denotan las primas de las opciones *put* y *call* para un *strike* $K$), se llega a la fórmula de valoración general:
 
-$$K_{\text{var}} = \frac{2}{T}\left[ rT - \left(\frac{S_0}{S_*}e^{rT} - 1\right) - \ln\left(\frac{S_*}{S_0}\right) + e^{rT}\int_{0}^{S_{*}}\frac{P(K)}{K^{2}}dK + e^{rT}\int_{S_*}^{\infty}\frac{C(K)}{K^{2}}dK \right]$$
+$$
+K_{var} = \frac{2}{T} \left[ rT - \left( \frac{S_0}{S_{\*}} e^{rT} - 1 \right) - \ln\left(\frac{S_{\*}}{S_0}\right) + e^{rT} \int_0^{S_{\*}} \frac{P(K)}{K^2} dK + e^{rT} \int_{S_{\*}}^\infty \frac{C(K)}{K^2} dK \right]
+$$
 
 Esta formulación demuestra de manera concluyente que la varianza se puede valorar y replicar estáticamente comprando un *strip* infinito de opciones OTM (fuera del dinero) de *puts* y *calls*, ponderadas exactamente por el inverso del cuadrado de su *strike* ($\frac{1}{K^2}$).
 
