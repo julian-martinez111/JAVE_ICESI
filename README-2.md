@@ -24,13 +24,6 @@
 
 ### 1. El variance swap: definición, replicación y sesgos
 
-# Fundamentos Teóricos y de Valoración de los Variance Swaps: Del Lema de Itô al CBOE VIX
-
-**Autor:** Julián Andrés Martínez Ortiz  
-**Fecha:** 2026-09-28  
-
----
-
 ## Estructura, Mecánica y Liquidación
 
 Un *variance swap* es un contrato forward sobre la varianza anualizada de un activo subyacente específico. Su pago al vencimiento $T$ es lineal respecto a la varianza realizada:
@@ -109,11 +102,7 @@ Esta formulación demuestra de manera concluyente que la varianza se puede valor
 
 ---
 
-## Referencias
 
-1. Carr, Peter, and Dilip Madan. "Towards a Theory of Volatility Trading." *Volatility: New Estimation Techniques for Pricing Derivatives*, edited by R. Jarrow, 1998, pp. 417-427.
-2. Demeterfi, Kresimir, Emanuel Derman, Michael Kamal, and Joseph Zou. "More Than You Ever Wanted To Know About Volatility Swaps." *Goldman Sachs Quantitative Strategies Research Notes*, March 1999.
----
 #### 2.1 Contrato
 
 El Riesgo de Salto (Jump Risk): Teóricamente elegante, la discretización expone a las mesas de dinero a riesgos operativos y de modelo. Si el subyacente experimenta un gap de precios violento sobre una región donde no existen strikes de opciones líquidos, el strip discreto de  
