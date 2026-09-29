@@ -5,7 +5,7 @@
 ## Tabla de contenidos
 
 - [Marco Teórico](#marco-teórico)
-  - [1. El variance swap: definición, replicación y sesgos](#1-el-variance-swap-definición-replicación-y-sesgos)
+  - [1. El variance swap: definición y replicación](#1-el-variance-swap-definición-y-replicación)
   - [2. Modelo de Merton (jump-diffusion)](#2-modelo-de-merton-jump-diffusion)
   - [3. Modelo de Heston y modelo de Bates (SV + saltos)](#3-modelo-de-heston-y-modelo-de-bates-sv--saltos)
   - [4. Modelar el evento de earnings y el vol crush](#4-modelar-el-evento-de-earnings-y-el-vol-crush)
@@ -22,7 +22,7 @@
 
 ---
 
-# 1. El variance swap: definición, replicación y sesgos
+# 1. El variance swap: definición y replicación
 
 ## Estructura, Mecánica y Liquidación
 
