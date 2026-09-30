@@ -146,12 +146,6 @@ $$
 En conjunto, la idea es que un payoff complejo puede descomponerse en una posición constante, una exposición lineal mediante *forwards* o futuros y una combinación de *puts* y *calls* con diferentes *strikes* para reproducir la curvatura del payoff.
 En conjunto, la idea es que un payoff complejo puede descomponerse en una posición constante, una exposición lineal mediante *forwards* o futuros y una combinación de *puts* y *calls* con diferentes *strikes* para reproducir la curvatura del payoff.
 
-Esta formulación demuestra de manera concluyente que la varianza se puede valorar y replicar estáticamente comprando un *strip* infinito de opciones OTM (fuera del dinero) de *puts* y *calls*, ponderadas exactamente por el inverso del cuadrado de su *strike* ($\frac{1}{K^2}$).
-
----
-
-### Cierre de la derivación: aplicación a $f(S)=\ln S$
-
 Con $f(S)=\ln S$ se tiene $f''(K)=-1/K^2$, de modo que
 
 $$
