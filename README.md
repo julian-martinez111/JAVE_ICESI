@@ -288,39 +288,6 @@ Esto demuestra matemáticamente que el sesgo de los *earnings* refleja la asimet
 | Cómo se identifica con opciones | Solo vía *smile* (asimetría y curtosis), mezclado con la difusión | Vía estructura temporal: escalón de varianza entre vencimientos que rodean a $\tau$ |
 | Efecto observable | Suaviza la superficie | La volatilidad implícita sube antes del anuncio y cae al conocerse; estructura temporal decreciente a corto plazo |
 
-La consecuencia central: **el salto de earnings se puede aislar con la estructura temporal de varianza** (sección anterior) mientras que el salto genérico solo se distingue de la difusión a través de la forma del *smile*. La literatura de earnings aprovecha esto: Dubinsky, Johannes, Kaeck y Seeger (2019) separan la incertidumbre del anuncio de la volatilidad diaria normal comparando volatilidad antes y después del anuncio o usando la estructura temporal de volatilidades implícitas.
-
-### Extracción del salto de earnings con la varianza forward
-
-Sea $T_1<\tau<T_2$ y sea $\bar v$ la varianza forward "base" (sin evento), estimada por ejemplo interpolando las varianzas forward de las ventanas contiguas que no contienen $\tau$. Como $w^{QV}(T_2)-w^{QV}(T_1)=(T_2-T_1)\bar v+\mathbb{E}[J_{EA}^2]$:
-
-$$
-\mathbb{E}^{\mathbb{Q}}[J_{EA}^2]\approx(T_2-T_1)\left(K^{\text{repl}}_{T_1,T_2}-\bar v\right)-\underbrace{2\,\mathbb{E}[g(J_{EA})]}_{\approx\,\mathbb{E}[J_{EA}^3]/3}
-$$
-
-El último término corrige el sesgo de replicación cuando $K_{T_1,T_2}$ se calcula con las ecuaciones (3)-(4); si la ventana es corta, este salto domina el resultado. Esta es una medida bajo $\mathbb{Q}$, por lo que incluye la prima de riesgo por el salto: no es directamente la esperanza física del movimiento.
-
-### Magnitud del sesgo (ilustración con cálculo propio)
-
-El sesgo relativo al aporte del salto a la varianza es $\;2\,\mathbb{E}[g(J)]\,/\,\mathbb{E}[J^2]$, independiente de $T$:
-
-| Caso | Sesgo relativo |
-|---|---|
-| Earnings simétrico con $\sigma_J=6\%$ y asimetría $-0.5$ (aprox. cúbica: $\text{asim.}\cdot\sigma_J/3$) | $\approx -1.0\%$ |
-| Salto fijo $J=-10\%$ | $\approx -3.3\%$ |
-| Salto fijo $J=-20\%$ | $\approx -6.3\%$ |
-
-Lo que sí depende de $T$ es cuánto pesa el salto en el *strike*: entra como $\mathbb{E}[J^2]/T$. Por ejemplo, con $T=10$ días hábiles ($10/252$), un salto de earnings con $\mathbb{E}[J_{EA}^2]=(6\%)^2$ suma $\approx0.091$ en varianza, de modo que un *strike* de 25% de volatilidad base pasa a $\approx39\%$; el sesgo por asimetría en ese caso es del orden de $0.1$ puntos de volatilidad.
-
-### Implicaciones para el análisis
-
-1. **El salto de earnings entra completo en lo que paga el swap** ($\mathbb{E}[J_{EA}^2]$), y la tira de opciones lo captura, salvo por el error de tercer orden $\tfrac{1}{3T}\mathbb{E}[J_{EA}^3]$. En vencimientos cortos que contienen el anuncio, el componente de earnings domina el *strike* y el sesgo relativo, aunque pequeño en porcentaje, deja de ser despreciable en términos absolutos.
-2. **Los saltos genéricos y los de earnings no deben mezclarse** en el modelo: los primeros se estiman con el *smile*, los segundos con el escalón de varianza en la estructura temporal.
-3. **Reportar siempre** $K^{\text{repl}}$ (lo que dan las opciones) y $K^{QV}$ (lo que paga el swap bajo el modelo), con y sin extrapolación de las colas, para separar el sesgo por saltos del error operativo de truncamiento.
-4. Para vencimientos que **no** contienen el anuncio ($T<\tau$) el término de earnings es cero y la fórmula (4) es una buena aproximación salvo por los saltos genéricos.
-
----
-
 
 ### 3. Modelo de Merton (jump-diffusion)
 
