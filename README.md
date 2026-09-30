@@ -261,21 +261,21 @@ Esta formulación se fundamenta en los modelos clásicos de difusión con saltos
 
 ### Replicación con opciones y el sesgo
 
-No obstante, cuando se negocian opciones en los mercados financieros, la cadena no mide la varianza cuadrática de forma directa, sino que incorpora una prima adicional debido a la asimetría de mercado, las colas gordas y el riesgo de caídas abruptas. Esta discrepancia se formaliza mediante la ecuación de replicación, la cual ajusta la varianza realizada sumando los términos de convexidad representados por la función especial de sesgo para cada tipo de salto:
+No obstante, cuando se negocian opciones en los mercados financieros, la cadena no mide la varianza cuadrática de forma directa, sino que incorpora una prima adicional debido a la asimetría de mercado, las colas gordas y el skew por miedo a desplomes en los precios. Esta discrepancia se formaliza mediante la ecuación de replicación (Neuberger, 1994; Carr & Madan, 1998), la cual ajusta la varianza realizada sumando los términos representados por la función especial de sesgo para cada tipo de salto:
 
 $$_{T}K_T^{\text{repl}} = {}_{T}K_T^{QV} + 2\lambda_c T \mathbb{E}[g(J_c)] + 2\mathbb{1}_{\tau \le T} \mathbb{E}[g(J_{EA})]$$
 
-Dicha función ($g(x) = e^x - 1 - x - \frac{1}{2}x^2$) mide exactamente la distorsión introducida por el contrato logarítmico frente a los movimientos extremos del subyacente[cite: 2].
+Dicha función ($g(x) = e^x - 1 - x - \frac{1}{2}x^2$) mide exactamente la distorsión introducida por el contrato logarítmico frente a los movimientos extremos del subyacente. En ese caso, $e^x$ se dispara en valor, incrementando la pendiente de la funcion.
 
 ---
 
 ### 4. Aislamiento del salto de *earnings*
 
-Para el salto programado, la intensidad temporal desaparece al tratarse de un evento único en una fecha conocida[cite: 2]. Al aislar el impacto específico de un reporte de resultados, los componentes de difusión y los saltos aleatorios se neutralizan[cite: 2]. Dado que un anuncio corporativo se concentra en un único retorno discreto entre el cierre previo y la apertura posterior, su efecto estructural se aproxima mediante una expansión matemática expresada como[cite: 2]:
+Para aislar el impacto exclusivo de un reporte de resultados (*earnings*), se resta la varianza calculada por opciones ($K^{\text{repl}}$) de la varianza realizada pura ($QV$), lo que hace que el ruido normal del mercado y los saltos aleatorios se cancelen. Al aplicar una expansión matemática (el desarrollo en serie de Taylor) sobre la función $g(x)$, los términos iniciales se eliminan y sobrevive el término cúbico. Al combinarlo con los factores de la fórmula, surge directamente un tercio del momento cúbico ($\mathbb{E}[J_{EA}^3]$)
 
 $$K_T^{\text{repl}} - K_T^{QV}|_{EA} = \frac{2}{T} \mathbb{E}[g(J_{EA})] \approx \frac{1}{3T} \mathbb{E}[J_{EA}^3]$$
 
-Esto demuestra analíticamente que el sesgo generado por los *earnings* en la estructura de volatilidad está íntimamente relacionado con la asimetría direccional (momento cúbico) del precio ante la revelación de la información[cite: 2].
+Esto demuestra matemáticamente que el sesgo de los *earnings* refleja la asimetría o el riesgo direccional extremo que el mercado anticipa ante el anuncio.
 
 ### Comparación conceptual
 
