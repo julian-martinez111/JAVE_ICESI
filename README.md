@@ -235,13 +235,13 @@ donde $K^{\text{repl}}=\mathbb{E}^{\mathbb{Q}}[R_T]/T$ es el valor que entrega l
 
 ## Varianza forward y estructura temporal
 
-Como la varianza (no la volatilidad) es aditiva en el tiempo, la varianza total esperada $w(T):=T\,K_T$ es aditiva y, entre dos vencimientos $T_1<T_2$, el *strike* de un swap con inicio a futuro es
+La varianza total esperada no se distribuye de manera uniforme a lo largo del tiempo, sino que es estrictamente aditiva. Con el fin de aislar la expectativa de volatilidad que ocurrirá de forma exclusiva entre dos vencimientos futuros $T_1$ y $T_2$, se emplea la estructura temporal de la varianza *forward* (Demeterfi et al., 1999). Esta relación matemática se define como:
 
 $$
-K_{T_1,T_2}=\frac{T_2K_{T_2}-T_1K_{T_1}}{T_2-T_1}=\frac{w(T_2)-w(T_1)}{T_2-T_1}.
+K_{T_1,T_2}=\frac{T_2K_{T_2}-T_1K_{T_1}}{T_2-T_1}.
 $$
 
-Se replica comprando un variance swap a $T_2$ con nocional en varianza $\frac{T_2}{T_2-T_1}$ y vendiendo uno a $T_1$ con nocional $\frac{T_1}{T_2-T_1}$: la diferencia de pagos es $RV_{T_1,T_2}-K_{T_1,T_2}$. Es la herramienta *model-free* para leer la **estructura temporal de varianza** y localizar en el calendario dónde se concentra la varianza esperada.
+La ecuación anterior se construye ponderando la varianza total de cada vencimiento respecto a su respectivo horizonte temporal y dividiendo el resultado entre la diferencia de ambos plazos. El principal uso de esta estrategia se emplea mediante la adquisición de un *variance swap* con vencimiento en $T_2$ y la venta simultánea de otro con vencimiento en $T_1$, permitiendo asi identificar en qué segmento del calendario se concentra la incertidumbre.
 
 ---
 
@@ -251,25 +251,31 @@ La sección de saltos supone que estos llegan en instantes aleatorios (Poisson).
 
 ### Descomposición unificada
 
-Sea $J_c$ el salto genérico (Poisson, intensidad $\lambda_c$) y $J_{EA}$ el salto programado en la fecha $\tau$. Para un vencimiento $T$:
+Para comprender cómo se compone la volatilidad total de un activo, la descomposición unificada integra la varianza cuadrática esperada ($QV$) separándola en tres fuentes fundamentales de aleatoriedad del precio:
 
-$$
-T\,K^{QV}_T=\underbrace{\int_0^T \mathbb{E}^{\mathbb{Q}}[\sigma_t^2]\,dt}_{\text{difusión}}+\underbrace{\lambda_c T\,\mathbb{E}[J_c^2]}_{\text{saltos genéricos}}+\underbrace{\mathbb{1}_{\{\tau\le T\}}\,\mathbb{E}[J_{EA}^2]}_{\text{earnings}}
-$$
+$$_{T}K_T^{QV} = \int_0^T \mathbb{E}^\mathbb{Q}[\sigma_t^2] dt + \lambda_c T \mathbb{E}[J_c^2] + \mathbb{1}_{\tau \le T} \mathbb{E}[J_{EA}^2]$$
 
-y la tira de opciones entrega lo mismo más el sesgo de la sección anterior:
+El primer componente de esta expresión corresponde a la difusión continua, modelada mediante la integral esperada de la varianza en la trayectoria del activo (El movimiento normal diario del precio). El segundo componente agrupa los saltos aleatorios, siguiendo un proceso de Poisson. Finalmente, el tercer componente incorpora los saltos programados asociados a los anuncios de resultados (*earnings*), cuya fecha de ocurrencia $\tau$ si se conoce, diferenciándose así de los choques estocásticos del mercado.
 
-$$
-T\,K^{\text{repl}}_T=T\,K^{QV}_T+2\lambda_cT\,\mathbb{E}[g(J_c)]+2\,\mathbb{1}_{\{\tau\le T\}}\,\mathbb{E}[g(J_{EA})].
-$$
+---
 
-Para el salto programado desaparece $\lambda T$: es un único evento en fecha conocida, con $g(x)=e^x-1-x-\tfrac12x^2$ como antes. Su sesgo en unidades anualizadas es
+### Replicación con opciones y el sesgo
 
-$$
-K^{\text{repl}}_T-K^{QV}_T\Big|_{EA}=\frac{2}{T}\,\mathbb{E}[g(J_{EA})]\approx\frac{1}{3T}\,\mathbb{E}[J_{EA}^3].
-$$
+No obstante, cuando se negocian opciones en los mercados financieros, la cadena no mide la varianza cuadrática de forma directa, sino que incorpora una prima adicional debido a la asimetría de mercado, las colas gordas y el riesgo de caídas abruptas. Esta discrepancia se formaliza mediante la ecuación de replicación, la cual ajusta la varianza realizada sumando los términos de convexidad representados por la función especial de sesgo para cada tipo de salto:
 
-Como el swap discreto mide retornos diarios, el salto de earnings queda contenido en **un solo retorno** (el del cierre previo a la apertura posterior al anuncio) y entra completo, con su $J_{EA}^2$, en la varianza realizada.
+$$_{T}K_T^{\text{repl}} = {}_{T}K_T^{QV} + 2\lambda_c T \mathbb{E}[g(J_c)] + 2\mathbb{1}_{\tau \le T} \mathbb{E}[g(J_{EA})]$$
+
+Dicha función ($g(x) = e^x - 1 - x - \frac{1}{2}x^2$) mide exactamente la distorsión introducida por el contrato logarítmico frente a los movimientos extremos del subyacente[cite: 2].
+
+---
+
+### 4. Aislamiento del salto de *earnings*
+
+Para el salto programado, la intensidad temporal desaparece al tratarse de un evento único en una fecha conocida[cite: 2]. Al aislar el impacto específico de un reporte de resultados, los componentes de difusión y los saltos aleatorios se neutralizan[cite: 2]. Dado que un anuncio corporativo se concentra en un único retorno discreto entre el cierre previo y la apertura posterior, su efecto estructural se aproxima mediante una expansión matemática expresada como[cite: 2]:
+
+$$K_T^{\text{repl}} - K_T^{QV}|_{EA} = \frac{2}{T} \mathbb{E}[g(J_{EA})] \approx \frac{1}{3T} \mathbb{E}[J_{EA}^3]$$
+
+Esto demuestra analíticamente que el sesgo generado por los *earnings* en la estructura de volatilidad está íntimamente relacionado con la asimetría direccional (momento cúbico) del precio ante la revelación de la información[cite: 2].
 
 ### Comparación conceptual
 
