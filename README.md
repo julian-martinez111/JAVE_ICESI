@@ -289,76 +289,152 @@ Esto demuestra matemáticamente que el sesgo de los *earnings* refleja la asimet
 | Efecto observable | Suaviza la superficie | La volatilidad implícita sube antes del anuncio y cae al conocerse; estructura temporal decreciente a corto plazo |
 
 
-### 3. Modelo de Merton (jump-diffusion)
+# 1. El variance swap: definición y replicación
 
-#### 3.1 SDE
+## Estructura, Mecánica y Liquidación
 
-Bajo $\mathbb{Q}$ (§1.4):
+Un *variance swap* es un contrato forward sobre la varianza anualizada de un activo subyacente específico. Su pago al vencimiento $T$ es lineal respecto a la varianza realizada:
 
-$$
-\frac{dS_t}{S_{t^-}}=(r-q-\lambda k)\,dt+\sigma\,dW_t+(e^{J}-1)\,dN_t,\qquad J\sim\mathcal{N}(\mu_J,\sigma_J^2).
-$$
+$$\text{Payoff} = (\sigma_{R}^{2} - K_{\text{var}}) \times N_{\text{vol}}$$
 
-**Parámetros (4):** $\sigma$ (volatilidad de difusión), $\lambda$ (intensidad anual de saltos), $\mu_J$ (media del salto en log), $\sigma_J$ (desviación del salto).
-
-#### 3.2 Solución y momentos
-
-$$
-\ln\frac{S_T}{S_0}=\Big(r-q-\tfrac12\sigma^2-\lambda k\Big)T+\sigma W_T+\sum_{i=1}^{N_T}J_i .
-$$
-
-$$
-\mathbb{E}[R]=\Big(r-q-\tfrac12\sigma^2-\lambda k+\lambda\mu_J\Big)T,\qquad
-\operatorname{Var}[R]=\big(\sigma^2+\lambda(\mu_J^2+\sigma_J^2)\big)T,
-$$
-
-y cumulantes de orden $n\ge3$: $\kappa_n=\lambda T\,\mathbb{E}[J^n]$. La **curtosis en exceso** es $\lambda T\,\mathbb{E}[J^4]/\operatorname{Var}[R]^2$ y decae como $1/(\lambda T)$: para ventanas de earnings con $\lambda T=O(1)$, las colas son muy gruesas.
-
-#### 3.3 Función característica
-
-$$
-\varphi_M(u)=\exp\Big\{iu\big[\ln S_0+(r-q-\tfrac12\sigma^2-\lambda k)T\big]-\tfrac12\sigma^2u^2T+\lambda T\big(e^{iu\mu_J-\frac12\sigma_J^2u^2}-1\big)\Big\}.
-$$
-
-#### 3.4 Precio en serie de Merton
-
-Condicionando en $N_T=n$ el log-precio es normal, de modo que
-
-$$
-C_M=\sum_{n=0}^{\infty}\frac{e^{-\lambda'T}(\lambda'T)^n}{n!}\;C_{BS}\big(S_0,K,T,\sigma_n,r_n,q\big),
-$$
-
-$$
-\lambda'=\lambda(1+k),\qquad \sigma_n^2=\sigma^2+\frac{n\sigma_J^2}{T},\qquad r_n=r-\lambda k+\frac{n\ln(1+k)}{T}.
-$$
-
-Es una **mezcla de Poisson de modelos Black–Scholes**: con $\lambda T\approx1$ pocas iteraciones ($n\le 15$) bastan y da una validación independiente del método de Fourier.
-
-#### 3.5 Fair strike bajo Merton
-
-Con $\mathbb{E}[J]=\mu_J$ y $\mathbb{E}[J^2]=\mu_J^2+\sigma_J^2$:
-
-$$
-K^{QV}_M=\sigma^2+\lambda\,(\mu_J^2+\sigma_J^2),\qquad
-K^{\text{repl}}_M=\sigma^2+2\lambda\big(k-\mu_J\big)=\sigma^2+2\lambda\big(e^{\mu_J+\frac12\sigma_J^2}-1-\mu_J\big).
-$$
-
-**Versión discreta** (paso $\Delta=1/252$, retornos iid):
-
-$$
-K^{disc}_M=\sigma^2+\lambda(\mu_J^2+\sigma_J^2)+\Delta\Big(r-q-\tfrac12\sigma^2-\lambda(k-\mu_J)\Big)^2 .
-$$
-
-El último término es un efecto de deriva de segundo orden ($\Delta\ll1$).
-
-**Descomposición del riesgo de salto puro.** Definiendo $K^{BS}=\sigma^2$:
-
-$$
-\underbrace{K^{\text{repl}}_M-\sigma^2}_{\text{aporte del salto en el strike de mercado}}=2\lambda\big(k-\mu_J\big),\qquad
-\text{Sesgo}=K^{\text{repl}}_M-K^{QV}_M=2\lambda\,\mathbb{E}\big[e^J-1-J-\tfrac12J^2\big].
-$$
+Donde $\sigma_{R}^{2}$ denota la varianza realizada del activo subyacente durante el horizonte del contrato, $K_{\text{var}}$ representa el *strike* de varianza implícita y $N_{\text{vol}}$ corresponde al valor nocional expresado en unidades monetarias por punto de varianza.
 
 ---
+
+## Derivación Matemática del Strike de Varianza ($K_{\text{var}}$)
+
+El objetivo central de la modelización cuantitativa consiste en determinar el precio de ejercicio justo ($K_{\text{var}}$), el cual, bajo condiciones de ausencia de arbitraje, debe igualar la expectativa matemática de la varianza realizada bajo la medida neutral al riesgo.
+
+### El Proceso de Precios Continuo
+Se asume que la trayectoria del precio del subyacente $S_t$ sigue un movimiento browniano geométrico bajo la medida histórica, expresado estocásticamente en términos de su retorno instantáneo:
+
+$$\frac{dS_t}{S_t} = \mu_t dt + \sigma_t dW_t$$
+
+Donde $\mu_t$ denota el *drift*, $\sigma_t$ representa la volatilidad instantánea y $dW_t$ corresponde al incremento de un proceso de Wiener estándar. La varianza realizada anualizada $V$ se formaliza como:
+
+$$V = \frac{1}{T}\int_{0}^{T}\sigma_{t}^{2}dt$$
+
+### Aplicación del Lema de Itô y Transformación Logarítmica
+El desafío de esta valoración radica en aislar la varianza instantánea $\sigma_t^2$ utilizando únicamente variables de mercado observables (en este caso, el precio spot del activo). Puesto que $\sigma_t$ no es una variable directamente observable en el mercado, se recurre a una transformación logarítmica mediante la aplicación del Lema de Itô sobre la función $f(S_t) = \ln(S_t)$.
+
+Para aislar este término del proceso del precio del activo, partimos de las derivadas de la función: $f'(S) = \frac{1}{S}$ y $f''(S) = -\frac{1}{S^2}$, las cuales permiten cancelar el término $S^2$ al aplicar el lema de Itô:
+
+$$d(\ln S_t) = f'(S_t)dS_t + \frac{1}{2}f''(S_t)(dS_t)^2$$
+
+Desarrollando el término $(dS_t)^2$ a partir del movimiento browniano geométrico del precio:
+
+$$(dS_t)^2 = (\mu_t S_t \, dt + \sigma_t S_t \, dW_t)^2$$
+$$(dS_t)^2 = \mu_t^2 S_t^2 (dt)^2 + 2\mu_t \sigma_t S_t^2 dt \, dW_t + \sigma_t^2 S_t^2 (dW_t)^2$$
+
+Al aplicar las reglas del cálculo estocástico para cancelar los términos de mayor orden:
+
+$$(dt)^2 = 0, \quad dW_t \, dt = 0, \quad (dW_t)^2 = dt$$
+
+Obtenemos el desarrollo diferencial del término cuadrático:
+
+$$(dS_t)^2 = \sigma_t^2 S_t^2 \, dt$$
+
+> **Nota explicativa sobre el cálculo estocástico empleado:**  
+> La identidad del cálculo de Itô $(dW_t)^2 = dt$ difiere del cálculo clásico porque los incrementos del movimiento browniano son tan impredecibles y rápidos que su variación cuadrática en un intervalo pequeño no se anula, sino que converge exactamente al paso del tiempo $dt$.
+
+Sustituyendo todo en la ecuación original del lema de Itô:
+
+$$d(\ln S_t) = \frac{1}{S_t}dS_t - \frac{1}{2}\left(\frac{1}{S_t^2}\right)(\sigma_t^2 S_t^2 \, dt)$$
+
+Simplificando la expresión, se obtiene el retorno porcentual menos un ajuste por convexidad de $-\frac{1}{2}\sigma_t^2 dt$:
+
+$$d(\ln S_t) = \frac{1}{S_t}dS_t - \frac{1}{2}\sigma_t^2 \, dt$$
+
+---
+
+Reorganizando la ecuación resultante, se aísla el término de la varianza $\sigma_t^2 dt$. Tras integrar la expresión a lo largo del intervalo $[0, T]$, se demuestra que la varianza realizada se refleja exactamente manteniendo una posición en acciones rebalanceada continuamente (manteniendo siempre $\frac{1}{S_t}$ acciones) y tomando una posición corta estática en un instrumento que pague $\ln\left(\frac{S_T}{S_0}\right)$:
+
+$$V = \frac{2}{T}\left[\int_{0}^{T}\frac{dS_t}{S_t} - \ln\left(\frac{S_T}{S_0}\right)\right]$$
+## Esperanza Neutral al Riesgo y el Teorema de Carr-Madan
+
+Para encontrar un instrumento negociable en el mercado que sea equivalente al pago logarítmico, la valoración se traslada al marco de la probabilidad neutral al riesgo ($\mathbb{Q}$). Bajo esta medida, el activo subyacente crece en promedio a la tasa libre de riesgo $r$, permitiendo descontar flujos esperados a valor presente sin sesgos de preferencias de riesgo subjetivas. Así, el *strike* teórico del *variance swap* se define como:
+
+$$K_{\text{var}} = \mathbb{E}^{\mathbb{Q}}\left[ \frac{1}{T}\int_{0}^{T}\sigma_{t}^{2}dt \right]$$
+
+Para eliminar la necesidad de negociar contratos logarítmicos sintéticos, se implementa el teorema de replicación estática desarrollado por Peter Carr y Dilip Madan (1998). Este teorema demuestra que cualquier pago dos veces diferenciable $f(S_T)$ puede descomponerse analíticamente mediante una expansión de Taylor ponderada sobre una cadena infinita de opciones europeas *vanilla* (*calls* y *puts*).
+
+### Desglose analítico del Teorema de Carr-Madan
+
+* **Término de posición constante:** 
+
+$$
+f(S_*)
+$$
+
+evaluado en un precio de referencia preestablecido $S_*$. Usualmente, $S_*$ se fija como el precio *forward* vigente del activo. Este término representa simplemente un valor constante que no depende del precio futuro $S_T$.
+
+* **Término de exposición lineal:**
+
+$$
+f'(S_{\ast})(S_T-S_{\ast})
+$$
+
+Este componente representa la parte lineal del payoff, ya que depende directamente de $S_T$. Debido a esta característica, puede replicarse mediante una posición estática en contratos *forward* o futuros sobre el activo subyacente.
+
+* **Componentes convexos de opciones:** Son los términos encargados de representar la curvatura del payoff y están dados por dos integrales.
+
+La primera corresponde a una combinación de opciones *put* europeas:
+
+$$
+\int_0^{S_*} f''(K)(K-S_T)^+\,dK
+$$
+
+La segunda corresponde a una combinación de opciones *call* europeas:
+
+$$
+\int_{S_*}^{\infty} f''(K)(S_T-K)^+\,dK
+$$
+
+Esto se debe a que:
+
+$$
+(K-S_T)^+
+$$
+
+es exactamente el *payoff* de una *put* europea, mientras que:
+
+$$
+(S_T-K)^+
+$$
+
+es exactamente el *payoff* de una *call* europea.
+
+Por lo tanto, la representación completa de Carr-Madan puede expresarse como:
+
+$$
+f(S_T) = f(S_{\ast}) + f'(S_{\ast})(S_T-S_{\ast}) + \int_0^{S_{\ast}} f''(K)(K-S_T)^+\,dK + \int_{S_{\ast}}^{\infty} f''(K)(S_T-K)^+\,dK
+$$
+
+En conjunto, la idea es que un payoff complejo puede descomponerse en una posición constante, una exposición lineal mediante *forwards* o futuros y una combinación de *puts* y *calls* con diferentes *strikes* para reproducir la curvatura del payoff.
+En conjunto, la idea es que un payoff complejo puede descomponerse en una posición constante, una exposición lineal mediante *forwards* o futuros y una combinación de *puts* y *calls* con diferentes *strikes* para reproducir la curvatura del payoff.
+
+Con $f(S)=\ln S$ se tiene $f''(K)=-1/K^2$, de modo que
+
+$$
+\ln\frac{S_T}{S_{\ast}}=\frac{S_T-S_{\ast}}{S_{\ast}}-\int_0^{S_{\ast}}\frac{(K-S_T)^+}{K^2}\,dK-\int_{S_{\ast}}^{\infty}\frac{(S_T-K)^+}{K^2}\,dK .
+$$
+
+Al aplicar el operador de esperanza bajo $\mathbb{Q}$ se usan dos hechos: (i) $\mathbb{E}^{\mathbb{Q}}[S_T]=S_0e^{rT}$ y (ii) $\mathbb{E}^{\mathbb{Q}}\!\left[\int_0^T \frac{dS_t}{S_t}\right]=rT$. Además, el valor esperado no descontado de un pago de opción es su prima capitalizada, $e^{rT}P(K)$ o $e^{rT}C(K)$, donde $P(K)$ y $C(K)$ denotan las primas de las opciones *put* y *call* de *strike* $K$. Sustituyendo en (2) se llega a la fórmula de valoración general:
+
+$$
+K_{var} = \frac{2}{T} \left[ rT - \left( \frac{S_0}{S_{\ast}} e^{rT} - 1 \right) - \ln\left(\frac{S_{\ast}}{S_0}\right) + e^{rT} \int_0^{S_{\ast}} \frac{P(K)}{K^2} dK + e^{rT} \int_{S_{\ast}}^\infty \frac{C(K)}{K^2} dK \right] \tag{3}
+$$
+
+Si se elige $S_{\ast}=F_0=S_0e^{rT}$ (el *forward*), todos los términos no integrales se cancelan y queda la forma limpia de Britten-Jones y Neuberger (2000):
+
+$$
+K_{var}=\frac{2}{T}\,e^{rT}\left[\int_0^{F_0}\frac{P(K)}{K^2}\,dK+\int_{F_0}^{\infty}\frac{C(K)}{K^2}\,dK\right] \tag{4}
+$$
+
+(Con un dividendo continuo $q$, se reemplaza $rT$ por $(r-q)T$ en el primer término y $F_0=S_0e^{(r-q)T}$.)
+
+Esta formulación demuestra que, **si el precio tiene trayectorias continuas**, la varianza se puede valorar y replicar estáticamente comprando un *strip* infinito de opciones OTM (fuera del dinero) de *puts* y *calls*, ponderadas exactamente por el inverso del cuadrado de su *strike* ($\frac{1}{K^2}$). La sección siguiente muestra qué se rompe cuando esa hipótesis falla.
+
 
 ### 4. Modelo de Heston y modelo de Bates (SV + saltos)
 
