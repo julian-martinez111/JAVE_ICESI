@@ -417,13 +417,12 @@ $$
 Para implementar modelos de valuación basados en métodos de Fourier, necesitamos calcular la función característica $\varphi(u)=\mathbb{E}^{\mathbb{Q}}[e^{iu\ln S_T}]$. Esto se logra condicionando sobre $N_T$ y aprovechando que la difusión y los saltos son independientes entre sí. La parte correspondiente a la difusión aporta un factor $\exp\!\big(iu\,m\,T-\tfrac12\sigma^2u^2T\big)$, con $m=r-\lambda k-\tfrac12\sigma^2$. Por otro lado, utilizando la función generadora de los saltos $\psi(u)=\mathbb{E}[e^{iuJ}]=e^{iu\mu_J-\frac12\sigma_J^2u^2}$, resolvemos la esperanza del proceso de Poisson:
 
 $$
-\mathbb{E}\Big[e^{iu\sum_{i=1}^{N_T}J_i}\Big]=\sum_{n=0}^{\infty}\frac{e^{-\lambda T}(\lambda T)^n}{n!}\,\psi(u)^n=e^{-\lambda T}e^{\lambda T\psi(u)}=\exp\!\big\{\lambda T\big(\psi(u)-1\big)\big\}.
+\mathbb{E}\Big[e^{iu\sum_{i=1}^{N_T}J_i}\Big]=\sum_{n=0}^{\infty}\frac{e^{-\lambda T}(\lambda T)^n}{n!}\,\psi(u)^n=e^{-\lambda T}e^{\lambda T\psi(u)}=\exp\Big(\lambda T\big(\psi(u)-1\big)\Big)
 $$
-
 Al multiplicar ambas contribuciones, llegamos a la expresión compacta:
 
 $$
-\boxed{\varphi_M(u)=\exp\Big\{iu\big[\ln S_0+(r-\lambda k-\tfrac12\sigma^2)T\big]-\tfrac12\sigma^2u^2T+\lambda T\Big(e^{iu\mu_J-\frac12\sigma_J^2u^2}-1\Big)\Big\}} \tag{8}
+\boxed{\varphi_M(u)=\exp\Big\{iu\big[\ln S_0+(r-\lambda k-\tfrac12\sigma^2)T\big]-\tfrac12\sigma^2u^2T+\lambda T\Big(e^{iu\mu_J-\frac{1}{2}\sigma_J^2u^2}-1\Big)\Big\}} \tag{8}
 $$
 
 **Verificación de martingala:** Si evaluamos la función característica en $u=-i$, obtenemos directamente $e^{iu\ln S_T}=S_T$, por lo que $\varphi_M(-i)$ debe coincidir exactamente con el precio *forward*. En efecto, tomando los límites $iu\to1$, $-\frac12\sigma^2u^2\to+\frac12\sigma^2$ y evaluando $\psi(-i)=e^{\mu_J+\frac12\sigma_J^2}=1+k$, se comprueba que:
