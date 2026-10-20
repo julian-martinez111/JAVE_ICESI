@@ -291,13 +291,13 @@ Esto demuestra matemáticamente que el sesgo de los *earnings* refleja la asimet
 
 # 2. El modelo de Merton (*jump-diffusion*)
 
-La replicación estática de la sección anterior descansa en una hipótesis que se usó una sola vez, pero de forma esencial: el paso de Itô que convierte $\ln S_T$ en una integral de $\sigma_t^2$ requiere **trayectorias continuas**. Un anuncio de resultados viola exactamente esa hipótesis: el precio no evoluciona de forma suave durante la noche en que se publica el balance, sino que *salta* de un nivel a otro entre el cierre y la apertura.
+La replicación estática que desarrollamos antes parte de un supuesto clave que usamos: el paso del Lema de Itô para transformar $\ln S_T$ en una integral de $\sigma_t^2$ exige que las trayectorias del precio sean **continuas**. Sin embargo, un evento como un anuncio de resultados rompe esta regla por completo. El precio no evoluciona suavemente durante la noche en que se publican los resultados; por el contrario, *salta* de golpe de un nivel a otro entre el cierre y la apertura del mercado.
 
-Merton (1976) propone el modelo más simple que incorpora este fenómeno: se conserva la difusión browniana para el ruido diario y se le suma un **proceso de saltos de Poisson**. Este modelo cumple tres funciones en la investigación:
+Para capturar este comportamiento, Merton (1976) propuso un modelo que mantiene la difusión browniana para modelar el ruido de alta frecuencia del día a día y le añade un **proceso de saltos de Poisson**. En nuestra investigación, este modelo cumple tres propósitos esenciales:
 
-1. Genera **colas gruesas y *smile*** en vencimientos muy cortos, que es donde un movimiento brusco domina la distribución de $S_T$.
-2. Funciona como **laboratorio analítico**: permite cuantificar, en forma cerrada, qué parte de la fórmula (4) deja de ser válida cuando hay saltos.
-3. Su término de saltos tiene una lectura directa como **varianza de evento** del anuncio de resultados.
+1. Genera de forma natural **colas pesadas y el característico *smile*** en vencimientos cortos, que es justo cuando un movimiento drástico domina la distribución de $S_T$.
+2. Funciona como un **laboratorio analítico** muy limpio, permitiéndonos ver con exactitud matemática qué partes de la fórmula (4) dejan de cumplirse cuando hay saltos.
+3. El término de los saltos se interpreta de inmediato como la **varianza de evento** asociada al anuncio de resultados.
 
 ---
 
@@ -305,82 +305,78 @@ Merton (1976) propone el modelo más simple que incorpora este fenómeno: se con
 
 ### El proceso de Poisson y los saltos
 
-Sea $N_t$ un proceso de Poisson de intensidad $\lambda$ (número esperado de saltos por año). Sus propiedades definitorias son:
+Sea $N_t$ un proceso de Poisson con intensidad $\lambda$, que representa el número esperado de saltos por año. Sus propiedades básicas se conocen:
 
 $$
 \mathbb{P}(N_t=n)=\frac{e^{-\lambda t}(\lambda t)^n}{n!},\qquad \mathbb{E}[N_t]=\operatorname{Var}[N_t]=\lambda t,
 $$
 
-con incrementos independientes. En un intervalo infinitesimal $dt$ hay, a lo sumo, un salto:
+con incrementos independientes a lo largo del tiempo. En un intervalo infinitesimal $dt$, la probabilidad de que ocurra más de un salto es despreciable, de modo que hay a lo sumo un salto:
 
 $$
 \mathbb{P}(dN_t=1)=\lambda\,dt,\qquad \mathbb{P}(dN_t=0)=1-\lambda\,dt .
 $$
 
 > **Nota explicativa sobre el cálculo estocástico con saltos:**
-> Así como en el movimiento browniano se cumple $(dW_t)^2=dt$, en un proceso de saltos el incremento $dN_t$ vale $0$ o $1$, por lo que $(dN_t)^2=dN_t$. Además $dN_t\,dt=0$ y $dW_t\,dN_t=0$ (los saltos y la difusión son independientes y casi nunca coinciden). La consecuencia es que la variación cuadrática de la parte de saltos no crece con el tiempo: se acumula **únicamente** cuando ocurre un salto, y vale el cuadrado de su tamaño.
+> Del mismo modo que en el movimiento browniano estándar se cumple $(dW_t)^2=dt$, en un proceso de saltos el incremento $dN_t$ solo puede valer $0$ o $1$, lo que implica directamente que $(dN_t)^2=dN_t$. Por otro lado, los términos cruzados se anulan: $dN_t\,dt=0$ y $dW_t\,dN_t=0$, ya que los saltos y la difusión son independientes y no ocurren al mismo tiempo. Como consecuencia, la variación cuadrática de los saltos no se acumula de forma continua con el tiempo; lo hace **únicamente** en el instante exacto del salto, y su valor es simplemente el cuadrado del tamaño de dicho salto.
 
-Cada vez que ocurre un salto, el precio se multiplica por un factor aleatorio $e^{J}$, donde el **tamaño logarítmico del salto** es normal:
+Cada vez que se dispara un salto, el precio se multiplica por un factor estocástico $e^{J}$, donde el **tamaño logarítmico del salto** sigue una distribución normal:
 
 $$
 J_i\sim\mathcal{N}(\mu_J,\sigma_J^2)\ \text{iid, independiente de }W\text{ y de }N .
 $$
 
-Por lo tanto, el cambio porcentual de precio en un salto es $e^{J}-1$. Su media se obtiene de la función generadora de momentos de la normal, $\mathbb{E}[e^{J}]=e^{\mu_J+\frac12\sigma_J^2}$:
+Por ende, el cambio porcentual que experimenta el precio en un salto viene dado por $e^{J}-1$. Su valor esperado se calcula con la función generadora de momentos de la normal, sabiendo que $\mathbb{E}[e^{J}]=e^{\mu_J+\frac12\sigma_J^2}$:
 
 $$
 k:=\mathbb{E}[e^{J}-1]=e^{\mu_J+\frac12\sigma_J^2}-1 .
 $$
 
-Finalmente, la suma de $N_t$ saltos (**proceso de Poisson compuesto**) tiene, por la ley de la varianza total,
+Finalmente, si sumamos $N_t$ saltos consecutivos —lo que se conoce como un **proceso de Poisson compuesto**—, aplicando la ley de la varianza total obtenemos:
 
 $$
 \mathbb{E}\Big[\sum_{i=1}^{N_t}J_i\Big]=\lambda t\,\mu_J,\qquad
 \operatorname{Var}\Big[\sum_{i=1}^{N_t}J_i\Big]=\underbrace{\mathbb{E}[N_t]\operatorname{Var}[J]}_{\lambda t\,\sigma_J^2}+\underbrace{\operatorname{Var}[N_t]\,\mathbb{E}[J]^2}_{\lambda t\,\mu_J^2}=\lambda t\,(\mu_J^2+\sigma_J^2).
 $$
 
-El factor $\mu_J^2+\sigma_J^2=\mathbb{E}[J^2]$ reaparecerá como la contribución de los saltos a la varianza realizada.
+Aquí, el término $\mu_J^2+\sigma_J^2=\mathbb{E}[J^2]$ aparecerá más adelante de forma natural como la contribución directa de los saltos a la varianza realizada.
 
 ### La dinámica del precio y la compensación del salto
 
-Bajo la medida histórica, el precio sigue
+Bajo la medida histórica $\mathbb{P}$, el precio del activo evoluciona según la expresión:
 
 $$
 \frac{dS_t}{S_{t^-}}=(\mu-\lambda k)\,dt+\sigma\,dW_t+(e^{J}-1)\,dN_t ,
 $$
 
-donde $S_{t^-}$ es el precio inmediatamente antes de un posible salto. El término $-\lambda k\,dt$ es el **compensador**: como $\mathbb{E}[(e^{J}-1)\,dN_t]=\lambda k\,dt$, restarlo en el *drift* garantiza que el retorno esperado instantáneo total sea exactamente $\mu$, es decir, que $\mathbb{E}[dS_t/S_{t^-}]=\mu\,dt$. Formalmente, $dN_t-\lambda\,dt$ es una martingala, y el compensador es lo que mantiene la propiedad de martingala del precio descontado.
+donde $S_{t^-}$ denota el nivel del precio justo antes de un eventual salto. El término $-\lambda k\,dt$ cumple un rol fundamental: es el **compensador**. Dado que el valor esperado del componente de salto es $\mathbb{E}[(e^{J}-1)\,dN_t]=\lambda k\,dt$, restarlo dentro del *drift* asegura que el retorno esperado instantáneo global se mantenga en $\mu$, es decir, que $\mathbb{E}[dS_t/S_{t^-}]=\mu\,dt$.
 
-Bajo la medida neutral al riesgo $\mathbb{Q}$, el *drift* total debe ser $r$ (con un dividendo continuo $q$, se reemplaza $r$ por $r-q$):
+Al cambiar a la medida neutral al riesgo $\mathbb{Q}$, el *drift* total del proceso pasa a ser la tasa libre de riesgo $r$ (si hubiese un rendimiento por dividendos continuo $q$, simplemente sustituiríamos $r$ por $r-q$):
 
 $$
 \boxed{\frac{dS_t}{S_{t^-}}=(r-\lambda k)\,dt+\sigma\,dW_t+(e^{J}-1)\,dN_t} \tag{5}
 $$
 
-> **Relevancia para la investigación:**
-> Con saltos el mercado es incompleto y la medida $\mathbb{Q}$ no es única. Merton asumió que el riesgo de salto es diversificable, de modo que $(\lambda,\mu_J,\sigma_J)$ no cambian al pasar de $\mathbb{P}$ a $\mathbb{Q}$. En la práctica, al calibrar a precios de opciones, los cuatro parámetros $(\sigma,\lambda,\mu_J,\sigma_J)$ que se obtienen son **parámetros bajo $\mathbb{Q}$** y ya incorporan cualquier prima de riesgo de salto. Esto es lo que hace comparable el $K_{\text{var}}$ del modelo con el $K_{\text{var}}$ extraído de las opciones de mercado.
-
 ---
 
 ## El log-precio: Itô con saltos
 
-Igual que en el caso continuo, se trabaja con $f(S)=\ln S$. La diferencia es que ahora $S_t$ tiene dos tipos de movimiento, y el lema de Itô se aplica por separado a cada uno:
+De forma idéntica al caso puramente continuo, nos interesa estudiar la función $f(S)=\ln S$. La gran diferencia ahora es que $S_t$ combina dos fuentes de movimiento distintas, por lo que el Lema de Itô se aplica analizando ambos componentes por separado:
 
-* **Entre saltos**, el precio se comporta como un movimiento browniano geométrico con *drift* $(r-\lambda k)$. Se aplica exactamente la derivación de la sección anterior, con $f'(S)=1/S$ y $f''(S)=-1/S^2$, y aparece el ajuste por convexidad $-\frac12\sigma^2dt$.
-* **En un salto**, el precio pasa de $S_{t^-}$ a $S_{t^-}e^{J}$. El log-precio cambia entonces en
+- **En los periodos entre saltos**, el precio se comporta exactamente igual que en un movimiento browniano geométrico con un *drift* efectivo de $(r-\lambda k)$. Aplicando la misma derivada parcial que antes, con $f'(S)=1/S$ y $f''(S)=-1/S^2$, surge de manera natural el ajuste por convexidad $-\frac12\sigma^2dt$.
+- **En el momento exacto de un salto**, el precio salta bruscamente de $S_{t^-}$ a $S_{t^-}e^{J}$. Al aplicar el logaritmo, el cambio que experimenta el log-precio es simplemente
 $$\ln\!\big(S_{t^-}e^{J}\big)-\ln S_{t^-}=J ,$$
-y **no** en $e^{J}-1$.
+y **no** $e^{J}-1$.
 
-Combinando ambos efectos:
+Juntando ambos efectos en una sola expresión, tenemos:
 
 $$
 \boxed{d(\ln S_t)=\Big(r-\lambda k-\tfrac12\sigma^2\Big)dt+\sigma\,dW_t+J\,dN_t} \tag{6}
 $$
 
-> **Punto clave para lo que sigue:**
-> El retorno simple $dS/S$ salta en $e^{J}-1$, mientras que el log-retorno $d\ln S$ salta en $J$. En un movimiento continuo ambos coinciden a primer orden y la diferencia es solo el término de convexidad $\frac12\sigma^2dt$. Con saltos aparece una diferencia **adicional** $e^{J}-1-J$ en cada salto. Esa diferencia es la raíz del sesgo de replicación que se deriva más abajo.
+> Vale la pena notar una distinción crucial: mientras que el retorno simple $dS/S$ experimenta un salto de magnitud $e^{J}-1$, el log-retorno $d\ln S$ salta exactamente en $J$. En un entorno totalmente continuo, ambos coinciden a primer orden y la única diferencia es el término de convexidad $\frac12\sigma^2dt$. Sin embargo, al incorporar saltos, aparece una discrepancia **adicional** de $e^{J}-1-J$ en cada evento de salto. Esta diferencia matemática es la raíz directa del sesgo de replicación que demostraremos más adelante.
 
-Integrando (6) en $[0,T]$:
+Si integramos la ecuación (6) a lo largo del intervalo temporal $[0,T]$, obtenemos:
 
 $$
 \ln\frac{S_T}{S_0}=\Big(r-\lambda k-\tfrac12\sigma^2\Big)T+\sigma W_T+\sum_{i=1}^{N_T}J_i \tag{7}
@@ -388,186 +384,132 @@ $$
 
 ### Distribución: una mezcla de Poisson de normales
 
-Condicionando en el número de saltos $N_T=n$, el segundo y tercer sumando de (7) son normales independientes, de modo que $\ln(S_T/S_0)$ es normal con
+Si condicionamos el proceso a un número fijo de saltos $N_T=n$, tanto el segundo como el tercer sumando de (7) se comportan como variables normales independientes. Esto implica que el log-retorno $\ln(S_T/S_0)$ sigue una distribución normal condicionada con:
 
 $$
 m_n=\Big(r-\lambda k-\tfrac12\sigma^2\Big)T+n\,\mu_J,\qquad v_n=\sigma^2T+n\,\sigma_J^2 ,
 $$
 
-y la distribución incondicional es la mezcla $\sum_{n}\frac{e^{-\lambda T}(\lambda T)^n}{n!}\,\mathcal{N}(m_n,v_n)$.
+mientras que su distribución incondicional real resulta ser una mezcla ponderada de normales: $\sum_{n}\frac{e^{-\lambda T}(\lambda T)^n}{n!}\,\mathcal{N}(m_n,v_n)$.
 
 ### Momentos y cumulantes
 
-De la media y la varianza de cada componente se obtiene, para $R=\ln(S_T/S_0)$,
+A partir de la media y la varianza de cada componente, definimos $R=\ln(S_T/S_0)$ y deducimos fácilmente sus propiedades globales:
 
 $$
 \mathbb{E}[R]=\Big(r-\tfrac12\sigma^2-\lambda k+\lambda\mu_J\Big)T,\qquad
 \operatorname{Var}[R]=\Big(\sigma^2+\lambda(\mu_J^2+\sigma_J^2)\Big)T .
 $$
 
-Para órdenes superiores, los cumulantes de un proceso de Poisson compuesto son $\kappa_n=\lambda T\,\mathbb{E}[J^n]$ (se obtienen del desarrollo en serie del logaritmo de la función característica de la sección siguiente), y la difusión solo contribuye a los dos primeros. Con $\mathbb{E}[J^3]=\mu_J^3+3\mu_J\sigma_J^2$ y $\mathbb{E}[J^4]=\mu_J^4+6\mu_J^2\sigma_J^2+3\sigma_J^4$:
+Para analizar órdenes superiores, la teoría nos dice que los cumulantes de un proceso de Poisson compuesto vienen dados por $\kappa_n=\lambda T\,\mathbb{E}[J^n]$ (los cuales se derivan expandiendo en serie el logaritmo de la función característica que veremos a continuación), donde la difusión tradicional solo aporta a los dos primeros momentos. Sabiendo que $\mathbb{E}[J^3]=\mu_J^3+3\mu_J\sigma_J^2$ y $\mathbb{E}[J^4]=\mu_J^4+6\mu_J^2\sigma_J^2+3\sigma_J^4$, podemos calcular:
 
 $$
 \text{Asimetría}=\frac{\lambda T\,\mathbb{E}[J^3]}{\operatorname{Var}[R]^{3/2}},\qquad
 \text{Curtosis en exceso}=\frac{\lambda T\,\mathbb{E}[J^4]}{\operatorname{Var}[R]^{2}} .
 $$
 
-> **Relevancia para la investigación:**
-> El signo de la asimetría lo fija $\mu_J$ (un ajuste bajista a la salida de resultados genera asimetría negativa), y la curtosis decae como $1/(\lambda T)$. En una ventana de 5 a 10 días que contiene un anuncio, el número esperado de saltos $\lambda T$ es del orden de 1, de modo que las colas son muy gruesas. Esto explica por qué la estructura de saltos domina la forma del *smile* en vencimientos cortos.
+> El signo de la asimetría (*skewness*) queda completamente determinado por el parámetro $\mu_J$ (por ejemplo, un ajuste bajista típico tras un reporte de resultados genera una asimetría negativa marcada), mientras que la curtosis disminuye inversamente proporcional a $1/(\lambda T)$. En una ventana corta de 5 a 10 días alrededor de los anuncios, el número esperado de saltos $\lambda T$ ronda el valor de 1, lo que provoca que las colas de la distribución aumenten en una gran proporsion. Esto explica con claridad por qué la dinámica de saltos domina la forma del *smile* de volatilidad en vencimientos de corto plazo.
 
 ---
 
 ## Función característica
 
-Para valorar opciones por transformadas de Fourier se necesita $\varphi(u)=\mathbb{E}^{\mathbb{Q}}[e^{iu\ln S_T}]$. Se calcula condicionando en $N_T$ y usando que la difusión y los saltos son independientes. La parte de difusión da $\exp\!\big(iu\,m\,T-\tfrac12\sigma^2u^2T\big)$ con $m=r-\lambda k-\tfrac12\sigma^2$. Para los saltos, con $\psi(u)=\mathbb{E}[e^{iuJ}]=e^{iu\mu_J-\frac12\sigma_J^2u^2}$,
+Para implementar modelos de valuación basados en métodos de Fourier, necesitamos calcular la función característica $\varphi(u)=\mathbb{E}^{\mathbb{Q}}[e^{iu\ln S_T}]$. Esto se logra condicionando sobre $N_T$ y aprovechando que la difusión y los saltos son independientes entre sí. La parte correspondiente a la difusión aporta un factor $\exp\!\big(iu\,m\,T-\tfrac12\sigma^2u^2T\big)$, con $m=r-\lambda k-\tfrac12\sigma^2$. Por otro lado, utilizando la función generadora de los saltos $\psi(u)=\mathbb{E}[e^{iuJ}]=e^{iu\mu_J-\frac12\sigma_J^2u^2}$, resolvemos la esperanza del proceso de Poisson:
 
 $$
 \mathbb{E}\Big[e^{iu\sum_{i=1}^{N_T}J_i}\Big]=\sum_{n=0}^{\infty}\frac{e^{-\lambda T}(\lambda T)^n}{n!}\,\psi(u)^n=e^{-\lambda T}e^{\lambda T\psi(u)}=\exp\!\big\{\lambda T\big(\psi(u)-1\big)\big\}.
 $$
 
-Multiplicando ambas partes:
+Al multiplicar ambas contribuciones, llegamos a la expresión compacta:
 
 $$
 \boxed{\varphi_M(u)=\exp\Big\{iu\big[\ln S_0+(r-\lambda k-\tfrac12\sigma^2)T\big]-\tfrac12\sigma^2u^2T+\lambda T\Big(e^{iu\mu_J-\frac12\sigma_J^2u^2}-1\Big)\Big\}} \tag{8}
 $$
 
-**Verificación de martingala.** Al evaluar en $u=-i$ se tiene $e^{iu\ln S_T}=S_T$, de modo que $\varphi_M(-i)$ debe ser el forward. En efecto, $iu\to1$, $-\frac12\sigma^2u^2\to+\frac12\sigma^2$ y $\psi(-i)=e^{\mu_J+\frac12\sigma_J^2}=1+k$, de donde
+**Verificación de martingala:** Si evaluamos la función característica en $u=-i$, obtenemos directamente $e^{iu\ln S_T}=S_T$, por lo que $\varphi_M(-i)$ debe coincidir exactamente con el precio *forward*. En efecto, tomando los límites $iu\to1$, $-\frac12\sigma^2u^2\to+\frac12\sigma^2$ y evaluando $\psi(-i)=e^{\mu_J+\frac12\sigma_J^2}=1+k$, se comprueba que:
 
 $$
-\varphi_M(-i)=S_0\exp\!\Big\{(r-\lambda k-\tfrac12\sigma^2)T+\tfrac12\sigma^2T+\lambda kT\Big\}=S_0e^{rT}=F_0 .
+varphi_M(-i)=S_0\exp\!\Big\{(r-\lambda k-\tfrac12\sigma^2)T+\tfrac12\sigma^2T+\lambda kT\Big\}=S_0e^{rT}=F_0 .
 $$
 
 > **Relevancia para la investigación:**
-> La expresión (8) es la entrada de la inversión de Fourier (Carr–Madan, Gil-Pelaez) con la que se calculan los precios de calls y puts de Merton y, con ellos, el integral de replicación (4) evaluado sobre precios del modelo. La condición $\varphi_M(-i)=F_0$ se usa como prueba de consistencia numérica en cada calibración.
+> La fórmula (8) es la pieza central para aplicar técnicas de inversión de Fourier (como los algoritmos de Carr–Madan o Gil-Pelaez), mediante las cuales calculamos con gran eficiencia los precios teóricos de opciones *call* y *put* bajo el modelo de Merton y, a partir de ellos, evaluamos numéricamente la integral de replicación (4). Además, verificar que $\varphi_M(-i)=F_0$ nos sirve como una robusta prueba de consistencia numérica en cada rutina de calibración.
 
 ---
 
 ## Precio de opciones europeas: la serie de Merton
 
-Condicionando en $N_T=n$, el log-precio es normal (sección anterior), por lo que cada término se reduce a una fórmula de Black–Scholes con parámetros ajustados. Se buscan $(\sigma_n,r_n)$ tales que la varianza total y el forward de Black–Scholes coincidan con los del escenario con $n$ saltos:
+Si condicionamos el sistema a que ocurran exactamente $n$ saltos ($N_T=n$), el log-precio resultante adopta una distribución perfectamente normal, lo que significa que cada término puede resolverse mediante una fórmula clásica de Black–Scholes, ajustando adecuadamente sus parámetros equivalentes $(\sigma_n,r_n)$:
 
-* **Varianza total:** $\sigma_n^2T=v_n=\sigma^2T+n\sigma_J^2$, es decir, $\sigma_n^2=\sigma^2+\dfrac{n\sigma_J^2}{T}$.
-* **Forward:** $\mathbb{E}[S_T\mid N_T=n]=S_0\exp\!\big\{(r-\lambda k)T+n(\mu_J+\tfrac12\sigma_J^2)\big\}=S_0e^{r_nT}$, es decir, $r_n=r-\lambda k+\dfrac{n\ln(1+k)}{T}$.
+- **Varianza total ajustada:** $\sigma_n^2T=v_n=\sigma^2T+n\sigma_J^2$, lo que se traduce en una volatilidad equivalente $\sigma_n^2=\sigma^2+\dfrac{n\sigma_J^2}{T}$.
+- **Tasa *forward* ajustada:** $\mathbb{E}[S_T\mid N_T=n]=S_0\exp\!\big\{(r-\lambda k)T+n(\mu_J+\tfrac12\sigma_J^2)\big\}=S_0e^{r_nT}$, lo que define una tasa de interés modificada $r_n=r-\lambda k+\dfrac{n\ln(1+k)}{T}$.
 
-Black–Scholes con tasa $r_n$ descuenta a $e^{-r_nT}$, pero el descuento correcto es $e^{-rT}$. El factor de corrección es $e^{(r_n-r)T}=e^{-\lambda kT}(1+k)^n$, que se combina con el peso de Poisson:
+Mientras que el modelo de Black–Scholes estándar descuenta los flujos usando la tasa $r_n$ a través de $e^{-r_nT}$, el descuento correcto en este marco exige utilizar la tasa libre de riesgo $r$ mediante $e^{-rT}$. El factor de corrección necesario es $e^{(r_n-r)T}=e^{-\lambda kT}(1+k)^n$, el cual, al combinarse con las probabilidades del peso de Poisson, nos deja con:
 
 $$
 e^{-\lambda T}\frac{(\lambda T)^n}{n!}\,e^{-\lambda kT}(1+k)^n=\frac{e^{-\lambda' T}(\lambda' T)^n}{n!},\qquad \lambda'=\lambda(1+k).
 $$
 
-Resulta la serie de Merton:
+De este desarrollo surge la elegante serie analítica de Merton para opciones europeas:
 
 $$
 \boxed{C_M(K)=\sum_{n=0}^{\infty}\frac{e^{-\lambda' T}(\lambda' T)^n}{n!}\;C_{BS}\big(S_0,K,T,\sigma_n,r_n\big)} \tag{9}
 $$
 
-Los puts se obtienen por paridad put-call (que se cumple porque $\mathbb{E}[S_T]=F_0$).
+Los valores para las opciones *put* se derivan directamente aplicando la paridad *put-call* (la cual se cumple sin problemas gracias a que la condición $\mathbb{E}[S_T]=F_0$ se preserva).
 
-> **Relevancia para la investigación:**
-> (9) es una **mezcla de Poisson de modelos Black–Scholes**: cada escenario con $n$ saltos tiene su propia volatilidad $\sigma_n$, y la mezcla de volatilidades distintas produce el *smile*. Como $\lambda' T\approx1$ en ventanas de earnings, los pesos decaen de forma factorial y bastan unos 15 a 20 términos. La serie sirve como validación independiente del método de Fourier: ambos deben coincidir.
+
+> La ecuación (9) representa una **mezcla ponderada de distribuciones de Poisson sobre modelos Black–Scholes**: cada escenario con $n$ saltos cuenta con su propia volatilidad efectiva $\sigma_n$, y la combinación de estas distintas volatilidades es lo que genera de forma natural el *smile* observado. Dado que en las ventanas de resultados corporativos el parámetro $\lambda' T\approx1$, los pesos de la serie decrecen rápidamente de forma factorial, por lo que bastan entre 15 y 20 términos para lograr una convergencia perfecta. Esta serie funciona como un método de validación cruzada independiente frente al enfoque de Fourier: ambos procedimientos deben arrojar exactamente los mismos precios.
 
 ---
 
 ## El variance swap bajo Merton: qué se rompe con saltos
 
-Con el modelo de saltos definido, se puede responder con precisión qué parte de la sección anterior sobrevive. Se compara la cantidad que el contrato *paga* con la cantidad que la tira de opciones *replica*.
+Una vez establecida la arquitectura matemática del modelo de saltos, podemos analizar con precisión quirúrgica qué partes de los resultados anteriores siguen vigentes. Para ello, compararemos el pago real que efectúa el contrato frente a la cantidad que logra replicar la cartera estática de opciones.
 
 ### Lo que paga el contrato: la variación cuadrática
 
-La varianza realizada que paga el contrato es la suma de los cuadrados de los log-retornos observados. Cuando la malla de observación se hace más fina, esta suma converge a la **variación cuadrática** del log-precio $[X]_T$, que incluye los saltos. Aplicando las reglas $(dW_t)^2=dt$, $(dN_t)^2=dN_t$ y $dW_t\,dN_t=0$ al diferencial (6):
+Por definición, la varianza realizada que liquida el contrato al vencimiento corresponde a la suma de los cuadrados de los log-retornos observados. Al refinar la partición temporal de la muestra, esta sumatoria converge analíticamente hacia la **variación cuadrática** del proceso del log-precio, denotada por $[X]_T$, la cual absorbe de forma natural el impacto de los saltos. Aplicando las reglas de cálculo estocástico $(dW_t)^2=dt$, $(dN_t)^2=dN_t$ y $dW_t\,dN_t=0$ sobre el diferencial (6):
 
 $$
 (d\ln S_t)^2=\sigma^2\,dt+J^2\,dN_t\ \ \Longrightarrow\ \ [X]_T=\sigma^2T+\sum_{i=1}^{N_T}J_i^2 . \tag{10}
 $$
 
-Tomando esperanza, con $\mathbb{E}[N_T]=\lambda T$ y $\mathbb{E}[J^2]=\mu_J^2+\sigma_J^2$:
+Si tomamos la esperanza matemática de esta expresión, recordando que $\mathbb{E}[N_T]=\lambda T$ y $\mathbb{E}[J^2]=\mu_J^2+\sigma_J^2$, obtenemos:
 
 $$
 \boxed{K^{QV}=\frac{1}{T}\mathbb{E}^{\mathbb{Q}}\big[[X]_T\big]=\sigma^2+\lambda\,(\mu_J^2+\sigma_J^2)} \tag{11}
 $$
 
-> **Relevancia para la investigación:**
-> El término $K^{QV}-\sigma^2=\lambda(\mu_J^2+\sigma_J^2)$, multiplicado por $T$, es la **varianza de evento** del anuncio: $\varepsilon=\mathbb{E}\big[\sum_{i=1}^{N_T}J_i^2\big]=\lambda T(\mu_J^2+\sigma_J^2)$. Es decir, el modelo separa de forma natural la varianza "normal" $\sigma^2T$ de la varianza concentrada en el salto.
+> La diferencia $K^{QV}-\sigma^2=\lambda(\mu_J^2+\sigma_J^2)$, multiplicada por el horizonte $T$, representa exactamente la **varianza de evento** asociada al anuncio de earnings: $\varepsilon=\mathbb{E}\big[\sum_{i=1}^{N_T}J_i^2\big]=\lambda T(\mu_J^2+\sigma_J^2)$.
 
-### Lo que replica la tira de opciones
+### La tira de opciones
 
-La fórmula (4) se obtuvo a partir de dos ingredientes: el teorema de Carr–Madan (una identidad que vale trayectoria a trayectoria para *cualquier* $S_T$, con o sin saltos) y la esperanza $\mathbb{E}^{\mathbb{Q}}[\int dS_t/S_t]=rT$ (que sigue valiendo con saltos gracias al compensador $-\lambda k$). Por lo tanto, la tira de opciones sigue replicando, sin error, la cantidad
+La fórmula de replicación se fundamento en dos pilares: el teorema de Carr–Madan y la esperanza neutral al riesgo $\mathbb{E}^{\mathbb{Q}}[\int dS_t/S_t]=rT$ (que también se mantiene intacta gracias a la acción del compensador $-\lambda k$). Por consiguiente, la cartera de opciones continúa replicando exactamente la misma cantidad teórica:
 
 $$
 K^{\text{repl}}=\frac{2}{T}\,\mathbb{E}^{\mathbb{Q}}\Big[\int_0^T\frac{dS_t}{S_{t^-}}-\ln\frac{S_T}{S_0}\Big].
 $$
 
-Lo único que deja de cumplirse es el paso de Itô que la identificaba con $\int\sigma_t^2dt$. Para ver qué es ahora esa cantidad, se restan los diferenciales de $dS/S$ en (5) y de $d\ln S$ en (6):
+Lo único que deja de cumplirse es la equivalencia del Lema de Itô que antes permitía simplificar esa integral directamente en $\int\sigma_t^2dt$. Para comprender qué representa ahora esta cantidad, restamos los diferenciales del retorno simple $dS/S$ en (5) y del log-retorno $d\ln S$ en (6):
 
 $$
 \frac{dS_t}{S_{t^-}}-d\ln S_t=\tfrac12\sigma^2\,dt+\big(e^{J}-1-J\big)\,dN_t .
 $$
 
-Integrando y multiplicando por 2:
+Integrando a lo largo del periodo y multiplicando por el factor 2, llegamos a:
 
 $$
 2\Big[\int_0^T\frac{dS_t}{S_{t^-}}-\ln\frac{S_T}{S_0}\Big]=\sigma^2T+2\sum_{i=1}^{N_T}\big(e^{J_i}-1-J_i\big). \tag{12}
 $$
 
-Comparando (12) con (10): en el caso continuo ambos lados coinciden, pero con saltos cada salto aporta $2(e^{J}-1-J)$ a la cantidad replicable y $J^2$ a la variación cuadrática. Tomando esperanza en (12) con $\mathbb{E}[e^{J}-1-J]=k-\mu_J$:
+Si contrastamos la ecuación (12) con la de la variación cuadrática (10), notamos que en un régimen puramente continuo ambos lados coinciden perfectamente; sin embargo, en presencia de saltos, cada evento aporta una contribución diferente: $2(e^{J}-1-J)$ para el lado replicable frente a $J^2$ para la variación cuadrática. Al tomar la esperanza matemática en (12), sabiendo que $\mathbb{E}[e^{J}-1-J]=k-\mu_J$, deducimos:
 
 $$
 \boxed{K^{\text{repl}}=\sigma^2+2\lambda\,(k-\mu_J)=\sigma^2+2\lambda\big(e^{\mu_J+\frac12\sigma_J^2}-1-\mu_J\big)} \tag{13}
 $$
 
-### El sesgo de replicación
 
-Restando (11) a (13):
-
-$$
-\boxed{K^{\text{repl}}-K^{QV}=2\lambda\,\mathbb{E}\Big[e^{J}-1-J-\tfrac12J^2\Big]\approx\frac{\lambda}{3}\,\mathbb{E}[J^3]} \tag{14}
-$$
-
-La aproximación sale del desarrollo de Taylor $e^{J}-1-J-\tfrac12J^2=\tfrac16J^3+\tfrac1{24}J^4+\dots$: los dos primeros órdenes ($J$ y $J^2$) se cancelan exactamente, y el sesgo es de **tercer orden** en el tamaño del salto. De ahí se desprende:
-
-* Si los saltos tienen media negativa ($\mu_J<0$), entonces $\mathbb{E}[J^3]<0$ y $K^{\text{repl}}<K^{QV}$: **la tira de opciones subestima la varianza cuadrática esperada**.
-* Si $\mu_J=0$, la asimetría es nula y el sesgo es de cuarto orden, mucho menor.
-* El sesgo crece con la intensidad $\lambda$ y, más que proporcionalmente, con el tamaño de los saltos, justamente lo que ocurre en un anuncio de resultados.
-
-**Ilustración numérica** (parámetros sintéticos: $\sigma=30\%$, $\lambda=36$, $\sigma_J=7\%$, $T=7/252$, por lo que $\lambda T=1$; los valores de $K^{\text{repl}}$ de la tabla coinciden, con error relativo del orden de $10^{-6}$, con la integral (4) evaluada sobre precios de opciones calculados por Fourier, y la serie (9) reproduce esos precios):
-
-| $\mu_J$ | $K^{\text{repl}}$ | $K^{QV}$ | Brecha relativa | Vol. $\sqrt{K^{\text{repl}}}$ | Vol. $\sqrt{K^{QV}}$ |
-|:-------:|:-----------------:|:--------:|:---------------:|:-----------------------------:|:--------------------:|
-| $-0.5\%$ | 0.2666 | 0.2673 | 0.2% | 51.6% | 51.7% |
-| $-3\%$   | 0.2935 | 0.2988 | 1.8% | 54.2% | 54.7% |
-| $-6\%$   | 0.3834 | 0.3960 | 3.2% | 61.9% | 62.9% |
-| $-10\%$  | 0.5981 | 0.6264 | 4.5% | 77.3% | 79.2% |
-
-> **Relevancia para la investigación:**
-> Una tira de opciones valorada al precio de mercado (la forma (4)) entrega $K^{\text{repl}}$, mientras que el contrato paga una varianza realizada cuyo valor esperado es $\approx K^{QV}$. Por eso, al comparar el *fair strike* del modelo con el del mercado, hay que **comparar siempre la misma cantidad**: $K^{\text{repl}}$ del modelo contra $K^{\text{repl}}$ del mercado, y reportar aparte $K^{QV}$ y la brecha (14).
-
-### Muestreo discreto
-
-El contrato mide la varianza con retornos diarios, no de forma continua. Con paso $\Delta=1/252$, los retornos $R_i$ son iid con $\mathbb{E}[R_i]=\Delta\,(r-\tfrac12\sigma^2-\lambda(k-\mu_J))$ y $\operatorname{Var}[R_i]=\Delta\,(\sigma^2+\lambda(\mu_J^2+\sigma_J^2))$. Como la convención de mercado no resta la media, $\mathbb{E}[R_i^2]=\operatorname{Var}[R_i]+\mathbb{E}[R_i]^2$, y anualizando por $1/\Delta$:
-
-$$
-K^{disc}=\sigma^2+\lambda(\mu_J^2+\sigma_J^2)+\Delta\Big(r-\tfrac12\sigma^2-\lambda(k-\mu_J)\Big)^2 . \tag{15}
-$$
-
-El último término es de segundo orden en $\Delta$, por lo que $K^{disc}\approx K^{QV}$ y el efecto de la discretización es pequeño frente al efecto de los saltos (Broadie y Jain, 2008).
-
----
-
-## Importancia en el diseño de la investigación y límites del modelo
-
-**Qué aporta Merton al análisis**
-
-* **Aislar el riesgo de salto puro.** Como el modelo solo tiene difusión constante más saltos, $K^{\text{repl}}-\sigma^2=2\lambda(k-\mu_J)$ mide cuánto del *fair strike* se debe exclusivamente a los saltos, sin contaminación de volatilidad estocástica.
-* **Benchmark analítico.** Las ecuaciones (11), (13) y (15) permiten verificar en forma cerrada la integral de replicación y el Monte Carlo antes de pasar a modelos sin fórmula cerrada para el strike.
-* **Lectura de los parámetros.** El nivel ATM de corto plazo identifica $\sigma^2+\lambda(\mu_J^2+\sigma_J^2)$; $\mu_J$ controla la asimetría del *smile*; y $\lambda$ y $\sigma_J$ controlan la curtosis, aunque en un solo vencimiento corto se separan con dificultad entre sí.
-
-**Límites que motivan el modelo de Bates**
-
-* La volatilidad de difusión $\sigma$ es **constante**: Merton no puede generar dinámica de varianza ni explicar la estructura temporal de volatilidad implícita antes y después del anuncio.
-* Con saltos gaussianos, una sola componente, el modelo **no reproduce** densidades bimodales ni curvas de volatilidad implícita cóncavas, que se observan antes de algunos anuncios (Alexiou, Goyal, Kostakis y Rompolis, 2025; Kachhara, Markin y Singh, 2023).
-* Los saltos ocurren a una intensidad **constante** en el tiempo; para un anuncio en fecha conocida hay que permitir que $\lambda$ dependa del tiempo (ver la sección sobre el modelado del evento).
-
-La sección siguiente agrega volatilidad estocástica al modelo (Bates, 1996) y estudia cómo cambia el $K_{\text{var}}$ cuando $\sigma$ deja de ser constante.
 
 
 ### 4. Modelo de Heston y modelo de Bates (SV + saltos)
