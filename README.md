@@ -336,7 +336,7 @@ Finalmente, si sumamos $N_t$ saltos consecutivos —lo que se conoce como un **p
 
 $$
 \mathbb{E}\Big[\sum_{i=1}^{N_t}J_i\Big]=\lambda t\,\mu_J,\qquad
-\operatorname{Var}\Big[\sum_{i=1}^{N_t}J_i\Big]=\underbrace{\mathbb{E}[N_t]\operatorname{Var}[J]}_{\lambda t\,\sigma_J^2}+\underbrace{\operatorname{Var}[N_t]\,\mathbb{E}[J]^2}_{\lambda t\,\mu_J^2}=\lambda t\,(\mu_J^2+\sigma_J^2).
+\text{Var}\Big[\sum_{i=1}^{N_t}J_i\Big]=\underbrace{\mathbb{E}[N_t]\text{Var}[J]}_{\lambda t\,\sigma_J^2}+\underbrace{\text{Var}[N_t]\,\mathbb{E}[J]^2}_{\lambda t\,\mu_J^2}=\lambda t\,(\mu_J^2+\sigma_J^2)
 $$
 
 Aquí, el término $\mu_J^2+\sigma_J^2=\mathbb{E}[J^2]$ aparecerá más adelante de forma natural como la contribución directa de los saltos a la varianza realizada.
