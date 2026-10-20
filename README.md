@@ -308,7 +308,7 @@ Para capturar este comportamiento, Merton (1976) propuso un modelo que mantiene 
 Sea $N_t$ un proceso de Poisson con intensidad $\lambda$, que representa el número esperado de saltos por año. Sus propiedades básicas se conocen:
 
 $$
-\mathbb{P}(N_t=n)=\frac{e^{-\lambda t}(\lambda t)^n}{n!},\qquad \mathbb{E}[N_t]=\operatorname{Var}[N_t]=\lambda t,
+\mathbb{P}(N_t=n)=\frac{e^{-\lambda t}(\lambda t)^n}{n!},\qquad \mathbb{E}[N_t]=\text{Var}[N_t]=\lambda t
 $$
 
 con incrementos independientes a lo largo del tiempo. En un intervalo infinitesimal $dt$, la probabilidad de que ocurra más de un salto es despreciable, de modo que hay a lo sumo un salto:
