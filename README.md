@@ -358,10 +358,8 @@ $$
 
 De forma idéntica al caso puramente continuo, nos interesa estudiar la función $f(S)=\ln S$. La gran diferencia ahora es que $S_t$ combina dos fuentes de movimiento distintas, por lo que el Lema de Itô se aplica analizando ambos componentes por separado:
 
-- **En los periodos entre saltos**, el precio se comporta exactamente igual que en un movimiento browniano geométrico con un *drift* efectivo de $(r-\lambda k)$. Aplicando la misma derivada parcial que antes, con $f'(S)=1/S$ y $f''(S)=-1/S^2$, surge de manera natural el ajuste por convexidad $-\frac12\sigma^2dt$.
-- **En el momento exacto de un salto**, el precio salta bruscamente de $S_{t^-}$ a $S_{t^-}e^{J}$. Al aplicar el logaritmo, el cambio que experimenta el log-precio es simplemente
-$$\ln\!\big(S_{t^-}e^{J}\big)-\ln S_{t^-}=J ,$$
-y **no** $e^{J}-1$.
+- **En los periodos entre saltos**, el precio se comporta exactamente igual que en un movimiento browniano geométrico con un *drift* de $(r-\lambda k)$. Aplicando la misma derivada parcial que antes, con $f'(S)=1/S$ y $f''(S)=-1/S^2$, surge de manera natural el ajuste por convexidad $-\frac12\sigma^2dt$.
+- **En el momento exacto de un salto**, el precio salta bruscamente de $S_{t^-}$ a $S_{t^-}e^{J}$. Al aplicar el logaritmo, el cambio que experimenta el precio es $$\ln\big(S_{t^-}e^{J}\big)-\ln S_{t^-}=J ,$$ y **no** $e^{J}-1$ (que era el cambio porcentual del precio al momento del salto).
 
 Juntando ambos efectos en una sola expresión, tenemos:
 
@@ -369,7 +367,7 @@ $$
 \boxed{d(\ln S_t)=\Big(r-\lambda k-\tfrac12\sigma^2\Big)dt+\sigma\, dW_t+J\, dN_t} \tag{6}
 $$
 
-> Vale la pena notar una distinción crucial: mientras que el retorno simple $dS/S$ experimenta un salto de magnitud $e^{J}-1$, el log-retorno $d\ln S$ salta exactamente en $J$. En un entorno totalmente continuo, ambos coinciden a primer orden y la única diferencia es el término de convexidad $\frac12\sigma^2dt$. Sin embargo, al incorporar saltos, aparece una discrepancia **adicional** de $e^{J}-1-J$ en cada evento de salto. Esta diferencia matemática es la raíz directa del sesgo de replicación que demostraremos más adelante.
+> Vale la pena notar una distinción crucial: mientras que el retorno simple $dS/S$ experimenta un salto de magnitud $e^{J}-1$, el retorno logaritmico $d\ln S$ salta exactamente en $J$. En un día común del mercado sin saltos abruptos, ambos coinciden a primer orden y la única diferencia es el término de convexidad $\frac12\sigma^2dt$. Sin embargo, al analizar los activos en el mercado real aparece una discrepancia **adicional** de $e^{J}-1-J$ en cada evento de salto. Esta diferencia (que suele ser positiva ya que la magnitud de $e^{J}-1$ es mayor que la magnitud $J$) es la raíz del sesgo de replicación que demostraremos más adelante y explica el por que es casi imposible replicar el variance swap con opciones que tienen retornos logaritmicos (Carr-Madan).
 
 Si integramos la ecuación (6) a lo largo del intervalo temporal $[0,T]$, obtenemos:
 
