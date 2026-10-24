@@ -303,22 +303,22 @@ $$
 \mathbb{P}(N_t=n)=\frac{e^{-\lambda t}(\lambda t)^n}{n!},\qquad \mathbb{E}[N_t]=\text{Var}[N_t]=\lambda t
 $$
 
-con incrementos independientes a lo largo del tiempo. En un intervalo infinitesimal $dt$, la probabilidad de que ocurra más de un salto es despreciable, de modo que hay a lo sumo un salto:
+con incrementos independientes a lo largo del tiempo. En un intervalo infinitesimal $dt$, la probabilidad de que ocurra más de un salto es muy baja, de modo que hay a lo sumo un salto:
 
 $$
 \mathbb{P}(dN_t=1)=\lambda\,dt,\qquad \mathbb{P}(dN_t=0)=1-\lambda\,dt .
 $$
 
 > **Nota explicativa sobre el cálculo estocástico con saltos:**
-> Del mismo modo que en el movimiento browniano estándar se cumple $(dW_t)^2=dt$, en un proceso de saltos el incremento $dN_t$ solo puede valer $0$ o $1$, lo que implica directamente que $(dN_t)^2=dN_t$. Por otro lado, los términos cruzados se anulan: $dN_t\,dt=0$ y $dW_t\,dN_t=0$, ya que los saltos y la difusión son independientes y no ocurren al mismo tiempo. Como consecuencia, la variación cuadrática de los saltos no se acumula de forma continua con el tiempo; lo hace **únicamente** en el instante exacto del salto, y su valor es simplemente el cuadrado del tamaño de dicho salto.
+> Del mismo modo que en el movimiento browniano estándar se cumple $(dW_t)^2=dt$, en un proceso de saltos el incremento $dN_t$ solo puede valer $0$ o $1$, lo que implica que $(dN_t)^2=dN_t$. Por otro lado, los términos cruzados se anulan: $dN_t\,dt=0$ y $dW_t\,dN_t=0$, ya que los saltos y el recorrido de difusión del precio son independientes y no ocurren al mismo tiempo. Como consecuencia, la variación cuadrática de los saltos no se acumula de forma continua con el tiempo; lo hace **únicamente** en el momento exacto del salto, y su valor es simplemente el cuadrado del tamaño de dicho salto.
 
-Cada vez que se dispara un salto, el precio se multiplica por un factor estocástico $e^{J}$, donde el **tamaño logarítmico del salto** sigue una distribución normal:
+Cada vez que un salto de ese estilo ocurre, el precio se multiplica por un factor estocástico $e^{J}$, donde el **tamaño logarítmico del salto** sigue una distribución normal:
 
 $$
 J_i\sim\mathcal{N}(\mu_J,\sigma_J^2)\ \text{iid, independiente de }W\text{ y de }N .
 $$
 
-Por ende, el cambio porcentual que experimenta el precio en un salto viene dado por $e^{J}-1$. Su valor esperado se calcula con la función generadora de momentos de la normal, sabiendo que $\mathbb{E}[e^{J}]=e^{\mu_J+\frac12\sigma_J^2}$:
+Por ende, el cambio porcentual que experimenta el precio en el salto es $e^{J}-1$. Su valor esperado se calcula con la función generadora de momentos de la normal, sabiendo que $\mathbb{E}[e^{J}]=e^{\mu_J+\frac12\sigma_J^2}$:
 
 $$
 k:=\mathbb{E}[e^{J}-1]=e^{\mu_J+\frac12\sigma_J^2}-1 .
