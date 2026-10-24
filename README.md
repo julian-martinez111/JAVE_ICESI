@@ -344,7 +344,7 @@ $$
 \frac{dS_t}{S_{t^-}}=(\mu-\lambda k)\,dt+\sigma\,dW_t+(e^{J}-1)\,dN_t ,
 $$
 
-donde $S_{t^-}$ denota el nivel del precio justo antes de un eventual salto. El término $-\lambda k\,dt$ cumple un rol fundamental: es el **compensador**. Dado que el valor esperado del componente de salto es $\mathbb{E}[(e^{J}-1)\,dN_t]=\lambda k\,dt$, restarlo dentro del *drift* asegura que el retorno esperado instantáneo global se mantenga en $\mu$, es decir, que $\mathbb{E}[dS_t/S_{t^-}]=\mu\,dt$.
+donde $S_{t^-}$ representa el nivel del precio justo antes de que se produzca un salto. El término $-\lambda k\,dt$ cumple un papel fundamental: actúa como el **compensador**. Dado que los saltos por sí mismos generan un valor esperado de crecimiento ($\lambda k\,dt$), restarlos dentro de la tendencia (*drift*) funciona como un freno que evita que el retorno promedio esperado del browniano suba en exceso y se desvíe, manteniéndose exactamente en su tendencia base $\mu$, es decir, que $\mathbb{E}[dS_t/S_{t^-}]=\mu\,dt$.
 
 Al cambiar a la medida neutral al riesgo $\mathbb{Q}$, el *drift* total del proceso pasa a ser la tasa libre de riesgo $r$ (si hubiese un rendimiento por dividendos continuo $q$, simplemente sustituiríamos $r$ por $r-q$):
 
