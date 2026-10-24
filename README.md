@@ -114,13 +114,13 @@ Este componente representa la parte lineal del payoff, ya que depende directamen
 La primera corresponde a una combinación de opciones *put* europeas:
 
 $$
-\int_0^{S_*} f''(K)(K-S_T)^+\dK
+\int_0^{S_*} f''(K)(K-S_T)^+\, dK
 $$
 
 La segunda corresponde a una combinación de opciones *call* europeas:
 
 $$
-\int_{S_*}^{\infty} f''(K)(S_T-K)^+\dK
+\int_{S_*}^{\infty} f''(K)(S_T-K)^+\, dK
 $$
 
 Esto se debe a que:
@@ -140,7 +140,7 @@ es exactamente el *payoff* de una *call* europea.
 Por lo tanto, la representación completa de Carr-Madan puede expresarse como:
 
 $$
-f(S_T) = f(S_{\ast}) + f'(S_{\ast})(S_T-S_{\ast}) + \int_0^{S_{\ast}} f''(K)(K-S_T)^+\dK + \int_{S_{\ast}}^{\infty} f''(K)(S_T-K)^+\dK
+f(S_T) = f(S_{\ast}) + f'(S_{\ast})(S_T-S_{\ast}) + \int_0^{S_{\ast}} f''(K)(K-S_T)^+\, dK + \int_{S_{\ast}}^{\infty} f''(K)(S_T-K)^+\, dK
 $$
 
 En conjunto, la idea es que un payoff complejo puede descomponerse en una posición constante, una exposición lineal mediante *forwards* o futuros y una combinación de *puts* y *calls* con diferentes *strikes* para reproducir la curvatura del payoff.
@@ -149,7 +149,7 @@ En conjunto, la idea es que un payoff complejo puede descomponerse en una posici
 Con $f(S)=\ln S$ se tiene $f''(K)=-1/K^2$, de modo que
 
 $$
-\ln\frac{S_T}{S_{\ast}}=\frac{S_T-S_{\ast}}{S_{\ast}}-\int_0^{S_{\ast}}\frac{(K-S_T)^+}{K^2}\dK-\int_{S_{\ast}}^{\infty}\frac{(S_T-K)^+}{K^2}\dK .
+\ln\frac{S_T}{S_{\ast}}=\frac{S_T-S_{\ast}}{S_{\ast}}-\int_0^{S_{\ast}}\frac{(K-S_T)^+}{K^2}\, dK-\int_{S_{\ast}}^{\infty}\frac{(S_T-K)^+}{K^2}\, dK .
 $$
 
 Al aplicar el operador de esperanza bajo $\mathbb{Q}$ se usan dos hechos: (i) $\mathbb{E}^{\mathbb{Q}}[S_T]=S_0e^{rT}$ y (ii) $\mathbb{E}^{\mathbb{Q}}\!\left[\int_0^T \frac{dS_t}{S_t}\right]=rT$. Además, el valor esperado no descontado de un pago de opción es su prima capitalizada, $e^{rT}P(K)$ o $e^{rT}C(K)$, donde $P(K)$ y $C(K)$ denotan las primas de las opciones *put* y *call* de *strike* $K$. Sustituyendo en (2) se llega a la fórmula de valoración general:
@@ -161,7 +161,7 @@ $$
 Si se elige $S_{\ast}=F_0=S_0e^{rT}$ (el *forward*), todos los términos no integrales se cancelan y queda la forma limpia de Britten-Jones y Neuberger (2000):
 
 $$
-K_{var}=\frac{2}{T}\,e^{rT}\left[\int_0^{F_0}\frac{P(K)}{K^2}\dK+\int_{F_0}^{\infty}\frac{C(K)}{K^2}\dK\right] \tag{4}
+K_{var}=\frac{2}{T}\,e^{rT}\left[\int_0^{F_0}\frac{P(K)}{K^2}\, dK+\int_{F_0}^{\infty}\frac{C(K)}{K^2}\, dK\right] \tag{4}
 $$
 
 (Con un dividendo continuo $q$, se reemplaza $rT$ por $(r-q)T$ en el primer término y $F_0=S_0e^{(r-q)T}$.)
@@ -187,21 +187,21 @@ La suma discreta (2) converge a $[X]_T/T$ (1) al refinar el muestreo, y su difer
 Se extiende el modelo con saltos de actividad finita. Bajo $\mathbb{Q}$,
 
 $$
-\frac{dS_t}{S_{t^-}}=(r-\lambda\kappa)\dt+\sigma_t\dW_t+\left(e^{J}-1\right)dN_t,\qquad \kappa=\mathbb{E}[e^{J}-1],
+\frac{dS_t}{S_{t^-}}=(r-\lambda\kappa)\, dt+\sigma_t\, dW_t+\left(e^{J}-1\right)dN_t,\qquad \kappa=\mathbb{E}[e^{J}-1],
 $$
 
-donde $N_t$ es un proceso de Poisson de intensidad $\lambda$ y $J$ es el salto del log-precio. El término $-\lambda\kappa\dt$ compensa los saltos, de modo que $\mathbb{E}^{\mathbb{Q}}\!\left[\int_0^T \frac{dS_t}{S_{t^-}}\right]=rT$ sigue valiendo.
+donde $N_t$ es un proceso de Poisson de intensidad $\lambda$ y $J$ es el salto del log-precio. El término $-\lambda\kappa\, dt$ compensa los saltos, de modo que $\mathbb{E}^{\mathbb{Q}}\!\left[\int_0^T \frac{dS_t}{S_{t^-}}\right]=rT$ sigue valiendo.
 
-Aplicando Itô con saltos, en cada instante de salto el log-precio cambia en $\Delta X=J$ mientras que $S$ cambia en $e^{\Delta X}-1$ en términos relativos. Por tanto
-
-$$
-\ln\frac{S_T}{S_0}=\int_0^T\frac{dS_t}{S_{t^-}}-\frac12\int_0^T\sigma_t^2\dt-\sum_{s\le T}\left(e^{\Delta X_s}-1-\Delta X_s\right).
-$$
-
-La cantidad que replica la tira de opciones es $R_T:=2\left(\int_0^T \frac{dS_t}{S_{t^-}}-\ln\frac{S_T}{S_0}\right)$, y la variación cuadrática es $[X]_T=\int_0^T\sigma_t^2dt+\sum_{s\le T}(\Delta X_s)^2$. Restando:
+Aplicando Itô con saltos, en cada instante de salto el log-precio cambia en $\, delta X=J$ mientras que $S$ cambia en $e^{\, delta X}-1$ en términos relativos. Por tanto
 
 $$
-R_T-[X]_T=2\sum_{s\le T} g(\Delta X_s),\qquad g(x):=e^{x}-1-x-\tfrac12x^2 .
+\ln\frac{S_T}{S_0}=\int_0^T\frac{dS_t}{S_{t^-}}-\frac12\int_0^T\sigma_t^2\, dt-\sum_{s\le T}\left(e^{\, delta X_s}-1-\, delta X_s\right).
+$$
+
+La cantidad que replica la tira de opciones es $R_T:=2\left(\int_0^T \frac{dS_t}{S_{t^-}}-\ln\frac{S_T}{S_0}\right)$, y la variación cuadrática es $[X]_T=\int_0^T\sigma_t^2dt+\sum_{s\le T}(\, delta X_s)^2$. Restando:
+
+$$
+R_T-[X]_T=2\sum_{s\le T} g(\, delta X_s),\qquad g(x):=e^{x}-1-x-\tfrac12x^2 .
 $$
 
 La función $g$ tiene $g(0)=g'(0)=g''(0)=0$ y $g'''(x)=e^{x}>0$, de donde:
@@ -211,7 +211,7 @@ La función $g$ tiene $g(0)=g'(0)=g''(0)=0$ y $g'''(x)=e^{x}>0$, de donde:
 
 ### El sesgo de replicación
 
-Tomando esperanza bajo $\mathbb{Q}$ (con $\mathbb{E}\sum g(\Delta X_s)=\lambda T\,\mathbb{E}[g(J)]$):
+Tomando esperanza bajo $\mathbb{Q}$ (con $\mathbb{E}\sum g(\, delta X_s)=\lambda T\,\mathbb{E}[g(J)]$):
 
 $$
 \boxed{K^{\text{repl}}-K^{QV}=2\lambda\,\mathbb{E}\!\left[e^{J}-1-J-\tfrac12J^2\right]\approx\frac{\lambda}{3}\,\mathbb{E}[J^3]}
@@ -306,11 +306,11 @@ $$
 con incrementos independientes a lo largo del tiempo. En un intervalo infinitesimal $dt$, la probabilidad de que ocurra más de un salto es muy baja, de modo que hay a lo sumo un salto:
 
 $$
-\mathbb{P}(dN_t=1)=\lambda\dt,\qquad \mathbb{P}(dN_t=0)=1-\lambda\dt .
+\mathbb{P}(dN_t=1)=\lambda\, dt,\qquad \mathbb{P}(dN_t=0)=1-\lambda\, dt .
 $$
 
 > **Nota explicativa sobre el cálculo estocástico con saltos:**
-> Del mismo modo que en el movimiento browniano estándar se cumple $(dW_t)^2=dt$, en un proceso de saltos el incremento $dN_t$ solo puede valer $0$ o $1$, lo que implica que $(dN_t)^2=dN_t$. Por otro lado, los términos cruzados se anulan: $dN_t\dt=0$ y $dW_t\dN_t=0$, ya que los saltos y el recorrido de difusión del precio son independientes y no ocurren al mismo tiempo. Como consecuencia, la variación cuadrática de los saltos no se acumula de forma continua con el tiempo; lo hace **únicamente** en el momento exacto del salto, y su valor es simplemente el cuadrado del tamaño de dicho salto.
+> Del mismo modo que en el movimiento browniano estándar se cumple $(dW_t)^2=dt$, en un proceso de saltos el incremento $dN_t$ solo puede valer $0$ o $1$, lo que implica que $(dN_t)^2=dN_t$. Por otro lado, los términos cruzados se anulan: $dN_t\, dt=0$ y $dW_t\, dN_t=0$, ya que los saltos y el recorrido de difusión del precio son independientes y no ocurren al mismo tiempo. Como consecuencia, la variación cuadrática de los saltos no se acumula de forma continua con el tiempo; lo hace **únicamente** en el momento exacto del salto, y su valor es simplemente el cuadrado del tamaño de dicho salto.
 
 Cada vez que un salto de ese estilo ocurre, el precio se multiplica por un factor estocástico $e^{J}$, donde el **tamaño logarítmico del salto** sigue una distribución normal:
 
@@ -341,15 +341,15 @@ Aquí, el término $\mu_J^2+\sigma_J^2=\mathbb{E}[J^2]$ aparecerá más adelante
 Bajo la medida histórica $\mathbb{P}$, el precio del activo evoluciona según la expresión:
 
 $$
-\frac{dS_t}{S_{t^-}}=(\mu-\lambda k)\dt+\sigma\dW_t+(e^{J}-1)\dN_t ,
+\frac{dS_t}{S_{t^-}}=(\mu-\lambda k)\, dt+\sigma\, dW_t+(e^{J}-1)\, dN_t ,
 $$
 
-donde $S_{t^-}$ representa el nivel del precio justo antes de que se produzca un salto. El término $-\lambda k\dt$ cumple un papel fundamental: actúa como el **compensador**. Dado que los saltos por sí mismos generan un valor esperado de crecimiento ($\lambda k\dt$), restarlos dentro de la tendencia (*drift*) funciona como un freno que evita que el retorno promedio esperado del browniano suba en exceso y se desvíe, manteniéndose exactamente en su tendencia base $\mu$, es decir, que $\mathbb{E}[dS_t/S_{t^-}]=\mu\dt$.
+donde $S_{t^-}$ representa el nivel del precio justo antes de que se produzca un salto. El término $-\lambda k\, dt$ cumple un papel fundamental: actúa como el **compensador**. Dado que los saltos por sí mismos generan un valor esperado de crecimiento ($\lambda k\, dt$), restarlos dentro de la tendencia (*drift*) funciona como un freno que evita que el retorno promedio esperado del browniano suba en exceso y se desvíe, manteniéndose exactamente en su tendencia base $\mu$, es decir, que $\mathbb{E}[dS_t/S_{t^-}]=\mu\, dt$.
 
 Al cambiar a la medida neutral al riesgo $\mathbb{Q}$, el *drift* total del proceso pasa a ser la tasa libre de riesgo $r$ (si hubiese un rendimiento por dividendos continuo $q$, simplemente sustituiríamos $r$ por $r-q$):
 
 $$
-\boxed{\frac{dS_t}{S_{t^-}}=(r-\lambda k)\dt+\sigma\dW_t+(e^{J}-1)\dN_t} \tag{5}
+\boxed{\frac{dS_t}{S_{t^-}}=(r-\lambda k)\, dt+\sigma\, dW_t+(e^{J}-1)\, dN_t} \tag{5}
 $$
 
 ---
@@ -366,7 +366,7 @@ y **no** $e^{J}-1$.
 Juntando ambos efectos en una sola expresión, tenemos:
 
 $$
-\boxed{d(\ln S_t)=\Big(r-\lambda k-\tfrac12\sigma^2\Big)dt+\sigma\dW_t+J\dN_t} \tag{6}
+\boxed{d(\ln S_t)=\Big(r-\lambda k-\tfrac12\sigma^2\Big)dt+\sigma\, dW_t+J\, dN_t} \tag{6}
 $$
 
 > Vale la pena notar una distinción crucial: mientras que el retorno simple $dS/S$ experimenta un salto de magnitud $e^{J}-1$, el log-retorno $d\ln S$ salta exactamente en $J$. En un entorno totalmente continuo, ambos coinciden a primer orden y la única diferencia es el término de convexidad $\frac12\sigma^2dt$. Sin embargo, al incorporar saltos, aparece una discrepancia **adicional** de $e^{J}-1-J$ en cada evento de salto. Esta diferencia matemática es la raíz directa del sesgo de replicación que demostraremos más adelante.
@@ -430,8 +430,8 @@ $$
 
 Si condicionamos el sistema a que ocurran exactamente $n$ saltos ($N_T=n$), el log-precio resultante adopta una distribución perfectamente normal, lo que significa que cada término puede resolverse mediante una fórmula clásica de Black–Scholes, ajustando adecuadamente sus parámetros equivalentes $(\sigma_n,r_n)$:
 
-- **Varianza total ajustada:** $\sigma_n^2T=v_n=\sigma^2T+n\sigma_J^2$, lo que se traduce en una volatilidad equivalente $\sigma_n^2=\sigma^2+\dfrac{n\sigma_J^2}{T}$.
-- **Tasa *forward* ajustada:** $\mathbb{E}[S_T \mid N_T=n]=S_0\exp\big((r-\lambda k)T+n(\mu_J+\tfrac{1}{2}\sigma_J^2)\big)=S_0e^{r_nT}$, lo que define una tasa de interés modificada $r_n=r-\lambda k+\dfrac{n\ln(1+k)}{T}$.
+- **Varianza total ajustada:** $\sigma_n^2T=v_n=\sigma^2T+n\sigma_J^2$, lo que se traduce en una volatilidad equivalente $\sigma_n^2=\sigma^2+\, dfrac{n\sigma_J^2}{T}$.
+- **Tasa *forward* ajustada:** $\mathbb{E}[S_T \mid N_T=n]=S_0\exp\big((r-\lambda k)T+n(\mu_J+\tfrac{1}{2}\sigma_J^2)\big)=S_0e^{r_nT}$, lo que define una tasa de interés modificada $r_n=r-\lambda k+\, dfrac{n\ln(1+k)}{T}$.
   
 Mientras que el modelo de Black–Scholes estándar descuenta los flujos usando la tasa $r_n$ a través de $e^{-r_nT}$, el descuento correcto en este marco exige utilizar la tasa libre de riesgo $r$ mediante $e^{-rT}$. El factor de corrección necesario es $e^{(r_n-r)T}=e^{-\lambda kT}(1+k)^n$, el cual, al combinarse con las probabilidades del peso de Poisson, nos deja con:
 
@@ -458,10 +458,10 @@ Una vez establecida la arquitectura matemática del modelo de saltos, podemos an
 
 ### Lo que paga el contrato: la variación cuadrática
 
-Por definición, la varianza realizada que liquida el contrato al vencimiento corresponde a la suma de los cuadrados de los log-retornos observados. Al refinar la partición temporal de la muestra, esta sumatoria converge analíticamente hacia la **variación cuadrática** del proceso del log-precio, denotada por $[X]_T$, la cual absorbe de forma natural el impacto de los saltos. Aplicando las reglas de cálculo estocástico $(dW_t)^2=dt$, $(dN_t)^2=dN_t$ y $dW_t\dN_t=0$ sobre el diferencial (6):
+Por definición, la varianza realizada que liquida el contrato al vencimiento corresponde a la suma de los cuadrados de los log-retornos observados. Al refinar la partición temporal de la muestra, esta sumatoria converge analíticamente hacia la **variación cuadrática** del proceso del log-precio, denotada por $[X]_T$, la cual absorbe de forma natural el impacto de los saltos. Aplicando las reglas de cálculo estocástico $(dW_t)^2=dt$, $(dN_t)^2=dN_t$ y $dW_t\, dN_t=0$ sobre el diferencial (6):
 
 $$
-(d\ln S_t)^2=\sigma^2\dt+J^2\dN_t\ \ \Longrightarrow\ \ [X]_T=\sigma^2T+\sum_{i=1}^{N_T}J_i^2 . \tag{10}
+(d\ln S_t)^2=\sigma^2\, dt+J^2\, dN_t\ \ \Longrightarrow\ \ [X]_T=\sigma^2T+\sum_{i=1}^{N_T}J_i^2 . \tag{10}
 $$
 
 Si tomamos la esperanza matemática de esta expresión, recordando que $\mathbb{E}[N_T]=\lambda T$ y $\mathbb{E}[J^2]=\mu_J^2+\sigma_J^2$, obtenemos:
@@ -483,7 +483,7 @@ $$
 Lo único que deja de cumplirse es la equivalencia del Lema de Itô que antes permitía simplificar esa integral directamente en $\int\sigma_t^2dt$. Para comprender qué representa ahora esta cantidad, restamos los diferenciales del retorno simple $dS/S$ en (5) y del log-retorno $d\ln S$ en (6):
 
 $$
-\frac{dS_t}{S_{t^-}}-d\ln S_t=\tfrac12\sigma^2\dt+\big(e^{J}-1-J\big)\dN_t .
+\frac{dS_t}{S_{t^-}}-d\ln S_t=\tfrac12\sigma^2\, dt+\big(e^{J}-1-J\big)\, dN_t .
 $$
 
 Integrando a lo largo del periodo y multiplicando por el factor 2, llegamos a:
@@ -507,8 +507,8 @@ $$
 
 $$
 \begin{aligned}
-\frac{dS_t}{S_t}&=(r-q)\dt+\sqrt{v_t}\dW_t^{S},\\
-dv_t&=\kappa(\theta-v_t)\dt+\xi\sqrt{v_t}\dW_t^{v},\qquad d\langle W^S,W^v\rangle_t=\rho\dt .
+\frac{dS_t}{S_t}&=(r-q)\, dt+\sqrt{v_t}\, dW_t^{S},\\
+dv_t&=\kappa(\theta-v_t)\, dt+\xi\sqrt{v_t}\, dW_t^{v},\qquad d\langle W^S,W^v\rangle_t=\rho\, dt .
 \end{aligned}
 $$
 
@@ -519,15 +519,15 @@ $$
 * **Strike bajo Heston:**
 
 $$
-K^{QV}_H=K^{\text{repl}}_H=\frac1T\,\mathbb{E}\!\int_0^Tv_t\dt=\theta+\frac{(v_0-\theta)\big(1-e^{-\kappa T}\big)}{\kappa T}.
+K^{QV}_H=K^{\text{repl}}_H=\frac1T\,\mathbb{E}\!\int_0^Tv_t\, dt=\theta+\frac{(v_0-\theta)\big(1-e^{-\kappa T}\big)}{\kappa T}.
 $$
 
 #### 4.2 Bates (1996)
 
 $$
 \begin{aligned}
-\frac{dS_t}{S_{t^-}}&=(r-q-\lambda k)\dt+\sqrt{v_t}\dW_t^{S}+(e^{J}-1)\dN_t,\\
-dv_t&=\kappa(\theta-v_t)\dt+\xi\sqrt{v_t}\dW_t^{v},\qquad d\langle W^S,W^v\rangle_t=\rho\dt,
+\frac{dS_t}{S_{t^-}}&=(r-q-\lambda k)\, dt+\sqrt{v_t}\, dW_t^{S}+(e^{J}-1)\, dN_t,\\
+dv_t&=\kappa(\theta-v_t)\, dt+\xi\sqrt{v_t}\, dW_t^{v},\qquad d\langle W^S,W^v\rangle_t=\rho\, dt,
 \end{aligned}
 $$
 
@@ -568,7 +568,7 @@ $$
 K^{\text{repl}}_B=\theta+\frac{(v_0-\theta)(1-e^{-\kappa T})}{\kappa T}+2\lambda\big(k-\mu_J\big).
 $$
 
-(Demostración de $K^{\text{repl}}_B$: $\mathbb{E}\int dS/S=(r-q)T$ y $\mathbb{E}[\ln S_T/S_0]=(r-q-\lambda k+\lambda\mu_J)T-\tfrac12\mathbb{E}\int v\dt$, de donde $\tfrac2T\mathbb{E}[\int dS/S-\ln S_T/S_0]=\tfrac1T\mathbb{E}\int v\dt+2\lambda(k-\mu_J)$.)
+(Demostración de $K^{\text{repl}}_B$: $\mathbb{E}\int dS/S=(r-q)T$ y $\mathbb{E}[\ln S_T/S_0]=(r-q-\lambda k+\lambda\mu_J)T-\tfrac12\mathbb{E}\int v\, dt$, de donde $\tfrac2T\mathbb{E}[\int dS/S-\ln S_T/S_0]=\tfrac1T\mathbb{E}\int v\, dt+2\lambda(k-\mu_J)$.)
 
 **Prueba de consistencia obligatoria:** la integral de replicación de §2.3 evaluada con precios de opciones del modelo (Fourier) debe reproducir $K^{\text{repl}}$ analítico. Es un test unitario de todo el pipeline (verificado numéricamente con error relativo $<10^{-6}$).
 
@@ -628,7 +628,7 @@ Opciones para la ley del salto de evento $J_e$:
 | Opción | $J_e$ | Implicancia |
 |--------|-------|-------------|
 | (i) Gaussiano determinista | $\mathcal{N}(\mu_e,\sigma_e^2)$ | **Sin smile:** $\ln S_T$ es normal con varianza $\sigma^2T+\sigma_e^2$; equivale a Black–Scholes con mayor varianza total. Sirve como *benchmark*, no como modelo del smile. |
-| (ii) Poisson de ventana | $N_e\sim\text{Poisson}(\Lambda_e)$, $\Lambda_e=\lambda_e\Delta_e\approx1$ | Mezcla de gaussianas. Es la interpretación de "intensidad alta exactamente en la fecha del anuncio". Genera colas gruesas y smile. |
+| (ii) Poisson de ventana | $N_e\sim\text{Poisson}(\Lambda_e)$, $\Lambda_e=\lambda_e\, delta_e\approx1$ | Mezcla de gaussianas. Es la interpretación de "intensidad alta exactamente en la fecha del anuncio". Genera colas gruesas y smile. |
 | (iii) Bernoulli | $N_e\in\{0,1\}$ con prob. $p$ | Permite evento que "no ocurre" (retraso del anuncio). |
 | (iv) Doble exponencial | Kou (2002) | Asimetría marcada arriba/abajo. |
 | (v) Mezcla bimodal | dos componentes $\pm$ | Reproduce la **bimodalidad** de la densidad neutral al riesgo antes de EA (Kachhara, Markin y Singh, 2023) y las **curvas de volatilidad implícita cóncavas** (Alexiou, Goyal, Kostakis y Rompolis, 2025), que Merton/Bates de una sola componente gaussiana no pueden generar. |
@@ -650,7 +650,7 @@ $$
 \theta(t),\ \kappa(t)\ \text{análogos}.
 $$
 
-Con parámetros constantes por tramos, el sistema de Riccati (§4.3) se **propaga tramo a tramo** en $\tau=T-t$ con la condición terminal de cada tramo (fórmula cerrada con $D(0)\ne0$ o integración RK4). La integral de intensidad $\Lambda(T)=\int_0^T\lambda(t)\dt$ sustituye a $\lambda T$ en el término de salto (si $\mu_J,\sigma_J$ son constantes).
+Con parámetros constantes por tramos, el sistema de Riccati (§4.3) se **propaga tramo a tramo** en $\tau=T-t$ con la condición terminal de cada tramo (fórmula cerrada con $D(0)\ne0$ o integración RK4). La integral de intensidad $\Lambda(T)=\int_0^T\lambda(t)\, dt$ sustituye a $\lambda T$ en el término de salto (si $\mu_J,\sigma_J$ son constantes).
 
 #### 5.4 Vol crush: definición y lectura en el modelo
 
@@ -689,7 +689,7 @@ $$
 Con factor $\alpha>0$ de amortiguamiento y $k=\ln K$:
 
 $$
-C(K)=\frac{e^{-\alpha k}}{\pi}\int_0^\infty e^{-i\nu k}\,\psi(\nu)\d\nu,\qquad
+C(K)=\frac{e^{-\alpha k}}{\pi}\int_0^\infty e^{-i\nu k}\,\psi(\nu)\, d\nu,\qquad
 \psi(\nu)=\frac{e^{-rT}\,\varphi\big(\nu-(\alpha+1)i\big)}{\alpha^2+\alpha-\nu^2+i(2\alpha+1)\nu}.
 $$
 
@@ -729,7 +729,7 @@ $$
 \hat\Theta=\arg\min_{\Theta}\ \sum_{i=1}^{M}w_i\Big(\sigma^{model}_i(\Theta)-\sigma^{mkt}_i\Big)^2+\alpha\,\big\|\Theta-\Theta_{prior}\big\|^2 .
 $$
 
-* Equivalente en precios: $\sum_iw_i'\big(C_i^{model}-C_i^{mkt}\big)^2$ con $w_i'=1/\text{vega}_i^2$ (o $1/(\text{ask}-\text{bid})^2$), porque $\Delta C\approx\text{vega}\cdot\Delta\sigma$. **El RMSE de precios sin ponderar** sobreajusta las opciones caras (ITM/largas) y falla en wings baratos, que son los que determinan el sesgo por saltos.
+* Equivalente en precios: $\sum_iw_i'\big(C_i^{model}-C_i^{mkt}\big)^2$ con $w_i'=1/\text{vega}_i^2$ (o $1/(\text{ask}-\text{bid})^2$), porque $\, delta C\approx\text{vega}\cdot\, delta\sigma$. **El RMSE de precios sin ponderar** sobreajusta las opciones caras (ITM/largas) y falla en wings baratos, que son los que determinan el sesgo por saltos.
 * $w_i$: inverso del spread bid–ask o de la varianza del error de medición.
 * El término $\alpha\|\Theta-\Theta_{prior}\|^2$ (regularización de Tikhonov) estabiliza parámetros débilmente identificados ($\kappa,\theta$).
 
@@ -760,10 +760,10 @@ $$
 
 #### 8.1 Merton: esquema exacto
 
-Para paso $\Delta$ (típicamente 1 día = $1/252$):
+Para paso $\, delta$ (típicamente 1 día = $1/252$):
 
 $$
-\ln S_{t+\Delta}=\ln S_t+\Big(r-q-\tfrac12\sigma^2-\lambda k\Big)\Delta+\sigma\sqrt\Delta\,Z_1+N\mu_J+\sigma_J\sqrt N\,Z_2,\qquad N\sim\text{Poisson}(\lambda\Delta),
+\ln S_{t+\, delta}=\ln S_t+\Big(r-q-\tfrac12\sigma^2-\lambda k\Big)\, delta+\sigma\sqrt\, delta\,Z_1+N\mu_J+\sigma_J\sqrt N\,Z_2,\qquad N\sim\text{Poisson}(\lambda\, delta),
 $$
 
 con $Z_1,Z_2\sim\mathcal{N}(0,1)$ independientes. La suma de $N$ saltos normales es $\mathcal{N}(N\mu_J,N\sigma_J^2)$, por lo que **no hay error de discretización** (el esquema es exacto en distribución).
@@ -773,37 +773,37 @@ con $Z_1,Z_2\sim\mathcal{N}(0,1)$ independientes. La suma de $N$ saltos normales
 **Varianza** (Quadratic-Exponential). Dado $v_t$:
 
 $$
-m=\theta+(v_t-\theta)e^{-\kappa\Delta},\qquad
-s^2=\frac{v_t\xi^2e^{-\kappa\Delta}(1-e^{-\kappa\Delta})}{\kappa}+\frac{\theta\xi^2(1-e^{-\kappa\Delta})^2}{2\kappa},\qquad \psi=\frac{s^2}{m^2}.
+m=\theta+(v_t-\theta)e^{-\kappa\, delta},\qquad
+s^2=\frac{v_t\xi^2e^{-\kappa\, delta}(1-e^{-\kappa\, delta})}{\kappa}+\frac{\theta\xi^2(1-e^{-\kappa\, delta})^2}{2\kappa},\qquad \psi=\frac{s^2}{m^2}.
 $$
 
-* Si $\psi\le\psi_c$ (típicamente $\psi_c=1.5$): $v_{t+\Delta}=a(b+Z_v)^2$, con $b^2=\frac2\psi-1+\sqrt{\frac2\psi}\sqrt{\frac2\psi-1}$ y $a=\frac{m}{1+b^2}$.
-* Si $\psi>\psi_c$: con $p=\frac{\psi-1}{\psi+1}$, $\beta=\frac{1-p}{m}$ y $U\sim\mathcal{U}(0,1)$: $v_{t+\Delta}=0$ si $U\le p$; en otro caso $v_{t+\Delta}=\frac1\beta\ln\frac{1-p}{1-U}$.
+* Si $\psi\le\psi_c$ (típicamente $\psi_c=1.5$): $v_{t+\, delta}=a(b+Z_v)^2$, con $b^2=\frac2\psi-1+\sqrt{\frac2\psi}\sqrt{\frac2\psi-1}$ y $a=\frac{m}{1+b^2}$.
+* Si $\psi>\psi_c$: con $p=\frac{\psi-1}{\psi+1}$, $\beta=\frac{1-p}{m}$ y $U\sim\mathcal{U}(0,1)$: $v_{t+\, delta}=0$ si $U\le p$; en otro caso $v_{t+\, delta}=\frac1\beta\ln\frac{1-p}{1-U}$.
 
 **Log-precio** (con $\gamma_1=\gamma_2=\tfrac12$):
 
 $$
-\ln S_{t+\Delta}=\ln S_t+(r-q-\lambda k)\Delta+K_0+K_1v_t+K_2v_{t+\Delta}+\sqrt{K_3v_t+K_4v_{t+\Delta}}\;Z+N\mu_J+\sigma_J\sqrt N\,Z_2,
+\ln S_{t+\, delta}=\ln S_t+(r-q-\lambda k)\, delta+K_0+K_1v_t+K_2v_{t+\, delta}+\sqrt{K_3v_t+K_4v_{t+\, delta}}\;Z+N\mu_J+\sigma_J\sqrt N\,Z_2,
 $$
 
 $$
-K_0=-\frac{\rho\kappa\theta\Delta}{\xi},\quad
-K_1=\gamma_1\Delta\Big(\frac{\kappa\rho}{\xi}-\frac12\Big)-\frac\rho\xi,\quad
-K_2=\gamma_2\Delta\Big(\frac{\kappa\rho}{\xi}-\frac12\Big)+\frac\rho\xi,\quad
-K_3=\gamma_1\Delta(1-\rho^2),\quad K_4=\gamma_2\Delta(1-\rho^2).
+K_0=-\frac{\rho\kappa\theta\, delta}{\xi},\quad
+K_1=\gamma_1\, delta\Big(\frac{\kappa\rho}{\xi}-\frac12\Big)-\frac\rho\xi,\quad
+K_2=\gamma_2\, delta\Big(\frac{\kappa\rho}{\xi}-\frac12\Big)+\frac\rho\xi,\quad
+K_3=\gamma_1\, delta(1-\rho^2),\quad K_4=\gamma_2\, delta(1-\rho^2).
 $$
 
-Alternativa más simple, aunque sesgada: **full truncation Euler** (Lord, Koekkoek y van Dijk, 2010). Para $\Delta=1/252$ y $\xi$ moderado, QE es notablemente más preciso cerca de $v=0$.
+Alternativa más simple, aunque sesgada: **full truncation Euler** (Lord, Koekkoek y van Dijk, 2010). Para $\, delta=1/252$ y $\xi$ moderado, QE es notablemente más preciso cerca de $v=0$.
 
 #### 8.3 Ventana de earnings
 
 Se simula sobre la malla diaria hasta el vencimiento ($n$ pasos) con parámetros por tramos:
 
 1. **Pre-EA:** $\lambda_{pre}$ (bajo) y $v_0$ calibrado.
-2. **Día del EA** (índice de la fila que contiene el salto según BMO/AMC): $\Lambda_e=\lambda_e\Delta_e\approx1$ (p. ej. $\lambda_e=252$ en un paso diario) **o** salto único con distribución elegida en §5.2.
+2. **Día del EA** (índice de la fila que contiene el salto según BMO/AMC): $\Lambda_e=\lambda_e\, delta_e\approx1$ (p. ej. $\lambda_e=252$ en un paso diario) **o** salto único con distribución elegida en §5.2.
 3. **Post-EA:** $\lambda_{post}$ y, opcionalmente, reset de varianza $v\leftarrow c\,v$ (vol crush).
 
-El compensador del salto en el paso de evento es $-\Lambda_ek_e$ (no $-\lambda k\Delta$ con la intensidad base).
+El compensador del salto en el paso de evento es $-\Lambda_ek_e$ (no $-\lambda k\, delta$ con la intensidad base).
 
 #### 8.4 Estadísticos por trayectoria y estimadores
 
@@ -815,7 +815,7 @@ El compensador del salto en el paso de evento es $-\Lambda_ek_e$ (no $-\lambda k
 
 #### 8.5 Reducción de varianza y semillas
 
-* Variables antitéticas en $Z$; *control variate* usando una variable con esperanza conocida (por ejemplo, $\int v_t\dt$ aproximada con la regla trapezoidal, cuya esperanza es la de §4.1).
+* Variables antitéticas en $Z$; *control variate* usando una variable con esperanza conocida (por ejemplo, $\int v_t\, dt$ aproximada con la regla trapezoidal, cuya esperanza es la de §4.1).
 * $M\ge10^5$–$10^6$ trayectorias; fijar semilla (`numpy.random.default_rng(seed)`) y reportar el intervalo de confianza.
 
 ---
