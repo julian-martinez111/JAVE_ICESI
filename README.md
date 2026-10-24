@@ -219,8 +219,6 @@ $$
 
 donde $K^{\text{repl}}=\mathbb{E}^{\mathbb{Q}}[R_T]/T$ es el valor que entrega la tira de opciones en las ecuaciones (3)-(4) (depende solo de precios de opciones observados) y $K^{QV}=\mathbb{E}^{\mathbb{Q}}\big[[X]_T\big]/T$ es la esperanza de la varianza que el contrato paga en el límite de muestreo fino.
 
-**Lectura.**
-
 * Si los saltos son negativos en media, $\mathbb{E}[J^3]<0$ y $K^{\text{repl}}<K^{QV}$: el *strike* *model-free* de las ecuaciones (3)-(4) **subestima** la varianza cuadrática esperada.
 * Lo que el swap paga es $\approx K^{QV}$, **no** $K^{\text{repl}}$. Al comparar modelo contra mercado hay que reportar ambas cantidades y no mezclar definiciones.
 * Para quien vende el swap y se cubre con la réplica, el descalce es $R_T-[X]_T$: pierde con saltos bajistas y gana con alcistas, con un efecto cúbico en el tamaño del salto. Es consistente con lo que señalan Carr y Lee (2009) sobre la exposición de estos contratos a retornos al cubo y de orden superior en movimientos bruscos.
@@ -423,13 +421,7 @@ $$
 Al multiplicar ambas contribuciones, llegamos a la expresión compacta:
 
 $$
-\boxed{\varphi_M(u)=\exp\left\{iu\big[\ln S_0+(r-\lambda k-\tfrac12\sigma^2)T\big]-\tfrac12\sigma^2u^2T+\lambda T\Big(e^{iu\mu_J-\frac{1}{2}\sigma_J^2u^2}-1\Big)\right\}} \tag{8}
-$$
-
-**Verificación de martingala:** Si evaluamos la función característica en $u=-i$, obtenemos directamente $e^{iu\ln S_T}=S_T$, por lo que $\varphi_M(-i)$ debe coincidir exactamente con el precio *forward*. En efecto, tomando los límites $iu\to1$, $-\frac12\sigma^2u^2\to+\frac12\sigma^2$ y evaluando $\psi(-i)=e^{\mu_J+\frac12\sigma_J^2}=1+k$, se comprueba que:
-
-$$
-varphi_M(-i)=S_0\exp\!\Big\{(r-\lambda k-\tfrac12\sigma^2)T+\tfrac12\sigma^2T+\lambda kT\Big\}=S_0e^{rT}=F_0 .
+\boxed{\varphi_M(u)=\exp \Big\{ iu\big[\ln S_0+(r-\lambda k-\tfrac{1}{2}\sigma^2)T\big] - \tfrac{1}{2}\sigma^2u^2T + \lambda T \Big(e^{iu\mu_J - \frac{1}{2}\sigma_J^2u^2} - 1\Big) \Big\}} \tag{8}
 $$
 
 > **Relevancia para la investigación:**
@@ -442,8 +434,8 @@ $$
 Si condicionamos el sistema a que ocurran exactamente $n$ saltos ($N_T=n$), el log-precio resultante adopta una distribución perfectamente normal, lo que significa que cada término puede resolverse mediante una fórmula clásica de Black–Scholes, ajustando adecuadamente sus parámetros equivalentes $(\sigma_n,r_n)$:
 
 - **Varianza total ajustada:** $\sigma_n^2T=v_n=\sigma^2T+n\sigma_J^2$, lo que se traduce en una volatilidad equivalente $\sigma_n^2=\sigma^2+\dfrac{n\sigma_J^2}{T}$.
-- **Tasa *forward* ajustada:** $\mathbb{E}[S_T\mid N_T=n]=S_0\exp\!\big\{(r-\lambda k)T+n(\mu_J+\tfrac12\sigma_J^2)\big\}=S_0e^{r_nT}$, lo que define una tasa de interés modificada $r_n=r-\lambda k+\dfrac{n\ln(1+k)}{T}$.
-
+- **Tasa *forward* ajustada:** $\mathbb{E}[S_T \mid N_T=n]=S_0\exp\big((r-\lambda k)T+n(\mu_J+\tfrac{1}{2}\sigma_J^2)\big)=S_0e^{r_nT}$, lo que define una tasa de interés modificada $r_n=r-\lambda k+\dfrac{n\ln(1+k)}{T}$.
+  
 Mientras que el modelo de Black–Scholes estándar descuenta los flujos usando la tasa $r_n$ a través de $e^{-r_nT}$, el descuento correcto en este marco exige utilizar la tasa libre de riesgo $r$ mediante $e^{-rT}$. El factor de corrección necesario es $e^{(r_n-r)T}=e^{-\lambda kT}(1+k)^n$, el cual, al combinarse con las probabilidades del peso de Poisson, nos deja con:
 
 $$
