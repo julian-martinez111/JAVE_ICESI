@@ -223,12 +223,6 @@ donde $K^{\text{repl}}=\mathbb{E}^{\mathbb{Q}}[R_T]/T$ es el valor que entrega l
 * Lo que el swap paga es $\approx K^{QV}$, **no** $K^{\text{repl}}$. Al comparar modelo contra mercado hay que reportar ambas cantidades y no mezclar definiciones.
 * Para quien vende el swap y se cubre con la réplica, el descalce es $R_T-[X]_T$: pierde con saltos bajistas y gana con alcistas, con un efecto cúbico en el tamaño del salto. Es consistente con lo que señalan Carr y Lee (2009) sobre la exposición de estos contratos a retornos al cubo y de orden superior en movimientos bruscos.
 * El resultado no es una curiosidad teórica: Broadie y Jain (2008) encuentran que el efecto del muestreo discreto suele ser pequeño mientras que el de los saltos puede ser significativo. Carr, Lee y Lorig (2021) desarrollan réplicas robustas para difusiones con saltos de actividad finita y tamaño acotado.
-
-### Dos fuentes de error que no deben mezclarse
-
-1. **Sesgo por saltos (conceptual).** Ocurre aunque existiera una cadena continua de *strikes* $K\in(0,\infty)$: la réplica de la ecuación (2) deja de ser exacta trayectoria por trayectoria.
-2. **Truncamiento y discretización de la cadena (operativo).** Si el subyacente hace un *gap* sobre una región sin *strikes* líquidos, o la cadena real no llega a $K\to0,\infty$, el *strip* discreto tampoco replica bien el contrato logarítmico. Esto ocurre incluso bajo difusión pura, y es peor cuando hay un salto grande (colas gordas) y vencimientos cortos.
-
 ---
 
 ## Varianza forward y estructura temporal
