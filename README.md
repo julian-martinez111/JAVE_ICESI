@@ -398,14 +398,14 @@ A partir de la media y la varianza de cada componente, definimos $R=\ln(S_T/S_0)
 
 $$
 \mathbb{E}[R]=\Big(r-\tfrac12\sigma^2-\lambda k+\lambda\mu_J\Big)T,\qquad
-\operatorname{Var}[R]=\Big(\sigma^2+\lambda(\mu_J^2+\sigma_J^2)\Big)T .
+\text{Var}[R]=\Big(\sigma^2+\lambda(\mu_J^2+\sigma_J^2)\Big)T .
 $$
 
 Para analizar órdenes superiores, la teoría nos dice que los cumulantes de un proceso de Poisson compuesto vienen dados por $\kappa_n=\lambda T\,\mathbb{E}[J^n]$ (los cuales se derivan expandiendo en serie el logaritmo de la función característica que veremos a continuación), donde la difusión tradicional solo aporta a los dos primeros momentos. Sabiendo que $\mathbb{E}[J^3]=\mu_J^3+3\mu_J\sigma_J^2$ y $\mathbb{E}[J^4]=\mu_J^4+6\mu_J^2\sigma_J^2+3\sigma_J^4$, podemos calcular:
 
 $$
-\text{Asimetría}=\frac{\lambda T\,\mathbb{E}[J^3]}{\operatorname{Var}[R]^{3/2}},\qquad
-\text{Curtosis en exceso}=\frac{\lambda T\,\mathbb{E}[J^4]}{\operatorname{Var}[R]^{2}} .
+\text{Asimetría}=\frac{\lambda T\,\mathbb{E}[J^3]}{\text{Var}[R]^{3/2}},\qquad
+\text{Curtosis en exceso}=\frac{\lambda T\,\mathbb{E}[J^4]}{\text{Var}[R]^{2}} .
 $$
 
 > El signo de la asimetría (*skewness*) queda completamente determinado por el parámetro $\mu_J$ (por ejemplo, un ajuste bajista típico tras un reporte de resultados genera una asimetría negativa marcada), mientras que la curtosis disminuye inversamente proporcional a $1/(\lambda T)$. En una ventana corta de 5 a 10 días alrededor de los anuncios, el número esperado de saltos $\lambda T$ ronda el valor de 1, lo que provoca que las colas de la distribución aumenten en una gran proporsion. Esto explica con claridad por qué la dinámica de saltos domina la forma del *smile* de volatilidad en vencimientos de corto plazo.
@@ -419,10 +419,11 @@ Para implementar modelos de valuación basados en métodos de Fourier, necesitam
 $$
 \mathbb{E}\Big[e^{iu\sum_{i=1}^{N_T}J_i}\Big]=\sum_{n=0}^{\infty}\frac{e^{-\lambda T}(\lambda T)^n}{n!}\,\psi(u)^n=e^{-\lambda T}e^{\lambda T\psi(u)}=\exp\Big(\lambda T\big(\psi(u)-1\big)\Big)
 $$
+
 Al multiplicar ambas contribuciones, llegamos a la expresión compacta:
 
 $$
-\boxed{\varphi_M(u)=\exp\Big\{iu\big[\ln S_0+(r-\lambda k-\tfrac12\sigma^2)T\big]-\tfrac12\sigma^2u^2T+\lambda T\Big(e^{iu\mu_J-\frac{1}{2}\sigma_J^2u^2}-1\Big)\Big\}} \tag{8}
+\boxed{\varphi_M(u)=\exp\left\{iu\big[\ln S_0+(r-\lambda k-\tfrac12\sigma^2)T\big]-\tfrac12\sigma^2u^2T+\lambda T\Big(e^{iu\mu_J-\frac{1}{2}\sigma_J^2u^2}-1\Big)\right\}} \tag{8}
 $$
 
 **Verificación de martingala:** Si evaluamos la función característica en $u=-i$, obtenemos directamente $e^{iu\ln S_T}=S_T$, por lo que $\varphi_M(-i)$ debe coincidir exactamente con el precio *forward*. En efecto, tomando los límites $iu\to1$, $-\frac12\sigma^2u^2\to+\frac12\sigma^2$ y evaluando $\psi(-i)=e^{\mu_J+\frac12\sigma_J^2}=1+k$, se comprueba que:
