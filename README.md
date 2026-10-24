@@ -324,12 +324,15 @@ $$
 k:=\mathbb{E}[e^{J}-1]=e^{\mu_J+\frac12\sigma_J^2}-1 .
 $$
 
-Finalmente, si sumamos $N_t$ saltos consecutivos —lo que se conoce como un **proceso de Poisson compuesto**—, aplicando la ley de la varianza total obtenemos:
+Finalmente, si sumamos $N_t$ saltos consecutivos (lo que se conoce como un **proceso de Poisson compuesto**), aplicando la ley de la varianza total obtenemos:
 
 $$
 \mathbb{E}\Big[\sum_{i=1}^{N_t}J_i\Big]=\lambda t\,\mu_J,\qquad
 \text{Var}\Big[\sum_{i=1}^{N_t}J_i\Big]=\underbrace{\mathbb{E}[N_t]\text{Var}[J]}_{\lambda t\,\sigma_J^2}+\underbrace{\text{Var}[N_t]\,\mathbb{E}[J]^2}_{\lambda t\,\mu_J^2}=\lambda t\,(\mu_J^2+\sigma_J^2)
 $$
+
+El primer termino es la incertidumbre debida al tamaño de los saltos individuales multiplicada por el número esperado de saltos. El segundo termino es la incertidumbre debida a que el número mismo de saltos también varía con el tiempo. Si sumamos ambos terminos y factorizamos $$\lambda t\$$, obtenemos $$\lambda t\(\mu_J^2+\sigma_J^2)$$.
+
 
 Aquí, el término $\mu_J^2+\sigma_J^2=\mathbb{E}[J^2]$ aparecerá más adelante de forma natural como la contribución directa de los saltos a la varianza realizada.
 
