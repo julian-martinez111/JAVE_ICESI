@@ -387,14 +387,14 @@ Al no conocer el numero fijo de saltos, la distribución real resulta ser una me
 
 ### Momentos y cumulantes
 
-A partir de la media y la varianza de cada componente, definimos $R=\ln(S_T/S_0)$ y deducimos fácilmente sus propiedades globales:
+A partir de la media y la varianza de cada componente, definimos $R=\ln(S_T/S_0)$ y deducimos fácilmente sus propiedades globales (Ambas analizadas a lo largo del tiempo $T$:
 
 $$
 \mathbb{E}[R]=\Big(r-\tfrac12\sigma^2-\lambda k+\lambda\mu_J\Big)T,\qquad
 \text{Var}[R]=\Big(\sigma^2+\lambda(\mu_J^2+\sigma_J^2)\Big)T .
 $$
 
-Para analizar órdenes superiores, la teoría nos dice que los cumulantes de un proceso de Poisson compuesto vienen dados por $\kappa_n=\lambda T\,\mathbb{E}[J^n]$ (los cuales se derivan expandiendo en serie el logaritmo de la función característica que veremos a continuación), donde la difusión tradicional solo aporta a los dos primeros momentos. Sabiendo que $\mathbb{E}[J^3]=\mu_J^3+3\mu_J\sigma_J^2$ y $\mathbb{E}[J^4]=\mu_J^4+6\mu_J^2\sigma_J^2+3\sigma_J^4$, podemos calcular:
+Para analizar órdenes superiores, la teoría nos muestra que los cumulantes de un proceso de Poisson compuesto se calculan como $\kappa_n = \lambda T \mathbb{E}[J^n]$. Estos valores se obtienen expandiendo en serie el logaritmo de la función característica, donde la difusión tradicional solo aporta a los dos primeros momentos. Sabiendo que $\mathbb{E}[J^3] = \mu_J^3 + 3\mu_J \sigma_J^2$ y $\mathbb{E}[J^4] = \mu_J^4 + 6\mu_J^2 \sigma_J^2 + 3\sigma_J^4$, podemos calcular:
 
 $$
 \text{Asimetría}=\frac{\lambda T\,\mathbb{E}[J^3]}{\text{Var}[R]^{3/2}},\qquad
