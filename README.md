@@ -377,13 +377,13 @@ $$
 
 ### Distribución: una mezcla de Poisson de normales
 
-Si condicionamos el proceso a un número fijo de saltos $N_T=n$, tanto el segundo como el tercer sumando de (7) se comportan como variables normales independientes. Esto implica que el log-retorno $\ln(S_T/S_0)$ sigue una distribución normal condicionada con:
+Si supiéramos el numero exacto de saltos que ocurrirán $N_T=n$, tanto el segundo como el tercer sumando de (7) se comportarian como variables con un comportamiento normal. Esto implica que el log-retorno $\ln(S_T/S_0)$ sigue una distribución normal condicionada con:
 
 $$
 m_n=\Big(r-\lambda k-\tfrac12\sigma^2\Big)T+n\,\mu_J,\qquad v_n=\sigma^2T+n\,\sigma_J^2 ,
 $$
 
-mientras que su distribución incondicional real resulta ser una mezcla ponderada de normales: $\sum_{n}\frac{e^{-\lambda T}(\lambda T)^n}{n!}\,\mathcal{N}(m_n,v_n)$.
+Al no conocer el numero fijo de saltos, la distribución real resulta ser una mezcla ponderada de normales donde cada campana está pesada por la probabilidad de que ocurran n saltos: $\sum_{n}\frac{e^{-\lambda T}(\lambda T)^n}{n!}\,\mathcal{N}(m_n,v_n)$.
 
 ### Momentos y cumulantes
 
