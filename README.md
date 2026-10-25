@@ -341,7 +341,7 @@ Aquí, el término $\mu_J^2+\sigma_J^2=\mathbb{E}[J^2]$ aparecerá más adelante
 Bajo la medida histórica $\mathbb{P}$, el precio del activo evoluciona según la expresión:
 
 $$
-\frac{dS_t}{S_{t^-}}=(\mu-\lambda k)\, dt+\sigma\, dW_t+(e^{J}-1)\, dN_t ,
+\frac{dS_t}{S_{t^-}} = (\mu - \lambda k) dt + \sigma dW_t + (e^J - 1) dN_t
 $$
 
 donde $S_{t^-}$ representa el nivel del precio justo antes de que se produzca un salto. El término $-\lambda k\, dt$ cumple un papel fundamental: actúa como el **compensador**. Dado que los saltos por sí mismos generan un valor esperado de crecimiento ($\lambda k\, dt$), restarlos dentro de la tendencia (*drift*) funciona como un freno que evita que el retorno promedio esperado del browniano suba en exceso y se desvíe, manteniéndose exactamente en su tendencia base $\mu$, es decir, que $\mathbb{E}[dS_t/S_{t^-}]=\mu\, dt$.
