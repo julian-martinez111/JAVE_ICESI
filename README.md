@@ -306,7 +306,7 @@ $$
 con incrementos independientes a lo largo del tiempo. En un intervalo infinitesimal $dt$, la probabilidad de que ocurra más de un salto es muy baja, de modo que hay a lo sumo un salto:
 
 $$
-\mathbb{P}(dN_t=1)=\lambda\, dt,\qquad \mathbb{P}(dN_t=0)=1-\lambda\, dt .
+\mathbb{P}(dN_t = 1) = \lambda dt, \qquad \mathbb{P}(dN_t = 0) = 1 - \lambda dt
 $$
 
 > **Nota explicativa sobre el cálculo estocástico con saltos:**
@@ -349,7 +349,7 @@ donde $S_{t^-}$ representa el nivel del precio justo antes de que se produzca un
 Al cambiar a la medida neutral al riesgo $\mathbb{Q}$, el *drift* total del proceso pasa a ser la tasa libre de riesgo $r$ (si hubiese un rendimiento por dividendos continuo $q$, simplemente sustituiríamos $r$ por $r-q$):
 
 $$
-\boxed{\frac{dS_t}{S_{t^-}}=(r-\lambda k)\, dt+\sigma\, dW_t+(e^{J}-1)\, dN_t} \tag{5}
+\boxed{\frac{dS_t}{S_{t^-}} = (r - \lambda k) dt + \sigma dW_t + (e^J - 1) dN_t} \tag{5}
 $$
 
 ---
