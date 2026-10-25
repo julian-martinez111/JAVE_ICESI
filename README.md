@@ -401,7 +401,7 @@ $$
 \text{Curtosis en exceso}=\frac{\lambda T\,\mathbb{E}[J^4]}{\text{Var}[R]^{2}} .
 $$
 
-> El signo de la asimetría (*skewness*) queda completamente determinado por el parámetro $\mu_J$ (por ejemplo, un ajuste bajista típico tras un reporte de resultados genera una asimetría negativa marcada), mientras que la curtosis disminuye inversamente proporcional a $1/(\lambda T)$. En una ventana corta de 5 a 10 días alrededor de los anuncios, el número esperado de saltos $\lambda T$ ronda el valor de 1, lo que provoca que las colas de la distribución aumenten en una gran proporsion. Esto explica con claridad por qué la dinámica de saltos domina la forma del *smile* de volatilidad en vencimientos de corto plazo.
+> El signo de la asimetría (*skewness*) depende del parámetro $\mu_J$ (por ejemplo, un "crash" bajista tras un reporte de resultados genera una asimetría negativa marcada), mientras que la curtosis disminuye inversamente proporcional a $1/(\lambda T)$. En una ventana corta de 5 a 10 días alrededor de los anuncios, el número esperado de saltos $\lambda T$ ronda el valor de 1, lo que provoca que las colas de la distribución aumenten en una gran proporsion. Esto explica con claridad por qué la dinámica de saltos domina la forma del *smile* de volatilidad en vencimientos de corto plazo.
 
 ---
 
