@@ -542,10 +542,6 @@ En esta ecuacion, $\bar v(T)$ la varianza esperada es el nivel de largo plazo $v
 * **A plazos muy largos ($T \to \infty$):** El factor $(1 - e^{-\kappa T}) / (\kappa T)$ tiende a cero, haciendo que la varianza promedio converja hacia el nivel de largo plazo ($\theta$), ya que la velocidad de reversión a la media ($\kappa$) habrá absorbido todos los movimientos durante este periodo.
 
 
-
-
-Es el equivalente de $\sigma^2$ en Merton.
-
 ### Bates: Heston más los saltos de Merton
 
 Bates simplemente le agrega a Heston el mismo proceso de saltos de la sección anterior. Bajo $\mathbb{Q}$ (con dividendo continuo $q$ se cambia $r$ por $r-q$):
@@ -558,13 +554,13 @@ $$
 \boxed{dv_t=\kappa(\theta-v_t)\,dt+\xi\sqrt{v_t}\,dW_t^{v},\qquad d\langle W^S,W^v\rangle_t=\rho\,dt} \tag{17}
 $$
 
-donde $N_t$, $J\sim\mathcal{N}(\mu_J,\sigma_J^2)$ y $k=e^{\mu_J+\frac12\sigma_J^2}-1$ son los mismos de Merton. El modelo tiene **8 parámetros**: cinco de Heston $(v_0,\kappa,\theta,\xi,\rho)$ y tres de saltos $(\lambda,\mu_J,\sigma_J)$. Si apagamos ingredientes, recuperamos los modelos anteriores:
+donde $N_t$, $J\sim\mathcal{N}(\mu_J,\sigma_J^2)$ y $k=e^{\mu_J+\frac12\sigma_J^2}-1$ son los mismos de Merton. El modelo tiene **8 parámetros**: cinco de Heston $(v_0,\kappa,\theta,\xi,\rho)$ y tres de saltos $(\lambda,\mu_J,\sigma_J)$.
 
 | Si... | El modelo se reduce a... |
 |-------|--------------------------|
-| $\lambda=0$ | Heston |
-| $\xi=0$ y $v_0=\theta$ (varianza constante) | Merton, con $\sigma^2=\theta$ |
-| $\lambda=0$, $\xi=0$ y $v_0=\theta$ | Black–Scholes |
+| $\lambda=0$ | Heston - Desaparece la parte de Poisson dejando solo volatilidad estocástica. |
+| $\xi=0$ y $v_0=\theta$ (varianza constante) | Merton, con $\sigma^2=\theta$ - La varianza deja de ser aleatoria y se vuelve constante manteniendo únicamente los saltos. |
+| $\lambda=0$, $\xi=0$ y $v_0=\theta$ | Black–Scholes - Eliminamos saltos y varianza aleatoria. Queda el movimiento browniano geométrico estándar con volatilidad constante.|
 
 Esto es la base del experimento anidado: Black–Scholes $\to$ Merton $\to$ Heston $\to$ Bates, agregando **un solo ingrediente a la vez**, para poder atribuir cada cambio en el *strike* a una causa concreta. Como en Merton, los parámetros calibrados son bajo $\mathbb{Q}$ (incluyen primas de riesgo), lo que los hace comparables con el mercado.
 
