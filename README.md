@@ -537,7 +537,7 @@ $$
 
 En esta ecuacion, $\bar v(T)$ la varianza esperada es el nivel de largo plazo $v_0$ mas la distancia actual entre la varianza promedio y el valor de largo plazo $(v_0-\theta)$. Como los contratos de opciones o *Variance Swaps* duran un periodo determinado $T$ (por ejemplo, 30 días, 3 meses o 1 año), lo que realmente nos interesa es calcular el promedio de la varianza esperada desde $t = 0$ hasta $t = T$:
 
-En este caso, * **A plazos muy cortos ($T \to 0$):** El término del exponente decae poco, por lo que la varianza promedio $\bar{v}(T)$ estará sumamente influenciada por el nivel actual del mercado ($v_0$).
+* En este caso, * **A plazos muy cortos ($T \to 0$):** El término del exponente decae poco, por lo que la varianza promedio $\bar{v}(T)$ estará sumamente influenciada por el nivel actual del mercado ($v_0$).
 
 * **A plazos muy largos ($T \to \infty$):** El factor $(1 - e^{-\kappa T}) / (\kappa T)$ tiende a cero, haciendo que la varianza promedio converja hacia el nivel de largo plazo ($\theta$), ya que la velocidad de reversión a la media ($\kappa$) habrá absorbido todos los movimientos durante este periodo.
 
