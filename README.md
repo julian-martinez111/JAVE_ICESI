@@ -521,7 +521,7 @@ $$
 * $\xi$: volatilidad de la volatilidad, es decir, cuánto fluctúa la varianza al azar.
 * $v_0$: varianza de hoy.
 
-La raíz cuadrada hace que la varianza se mueva más cuando ya es alta (los periodos turbulentos se agrupan) y, si se cumple la **condición de Feller** $2\kappa\theta\ge\xi^2$, impide que $v_t$ llegue a ser negativa.
+La raíz cuadrada hace que la varianza se mueva más cuando ya es alta (los periodos turbulentos se agrupan), esto impide que $v_t$ llegue a ser negativa.
 
 El ruido de la varianza está correlacionado con el del precio: $d\langle W^S,W^v\rangle_t=\rho\,dt$. Normalmente $\rho<0$: cuando el precio cae, la varianza sube (efecto apalancamiento), y eso produce la asimetría negativa del *smile* en la parte de difusión.
 
@@ -535,7 +535,16 @@ $$
 \bar v(T):=\frac1T\,\mathbb{E}\!\int_0^T v_t\,dt=\theta+\frac{(v_0-\theta)\big(1-e^{-\kappa T}\big)}{\kappa T} . \tag{15}
 $$
 
-En palabras: $\bar v(T)$ es un promedio entre la varianza de hoy $v_0$ y la de largo plazo $\theta$. Es el equivalente de $\sigma^2$ en Merton.
+En esta ecuacion, $\bar v(T)$ la varianza esperada es el nivel de largo plazo $v_0$ mas la distancia actual entre la varianza promedio y el valor de largo plazo $(v_0-\theta)$. Como los contratos de opciones o *Variance Swaps* duran un periodo determinado $T$ (por ejemplo, 30 días, 3 meses o 1 año), lo que realmente nos interesa es calcular el promedio de la varianza esperada desde $t = 0$ hasta $t = T$:
+
+En este caso, * **A plazos muy cortos ($T \to 0$):** El término del exponente decae poco, por lo que la varianza promedio $\bar{v}(T)$ estará sumamente influenciada por el nivel actual del mercado ($v_0$).
+
+* **A plazos muy largos ($T \to \infty$):** El factor $(1 - e^{-\kappa T}) / (\kappa T)$ tiende a cero, haciendo que la varianza promedio converja hacia el nivel de largo plazo ($\theta$), ya que la velocidad de reversión a la media ($\kappa$) habrá absorbido todos los movimientos durante este periodo.
+
+
+
+
+Es el equivalente de $\sigma^2$ en Merton.
 
 ### Bates: Heston más los saltos de Merton
 
