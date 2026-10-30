@@ -496,95 +496,207 @@ $$
 \boxed{K^{\text{repl}}=\sigma^2+2\lambda\,(k-\mu_J)=\sigma^2+2\lambda\big(e^{\mu_J+\frac12\sigma_J^2}-1-\mu_J\big)} \tag{13}
 $$
 
+# 3. Modelo de Heston y modelo de Bates (SV + saltos)
 
+El modelo de Merton resolvió el problema de los saltos, pero dejó un supuesto incómodo: la volatilidad de difusión $\sigma$ es **constante**. Como el variance swap paga justamente la varianza realizada, y esta cambia con el tiempo (hay periodos calmados y periodos turbulentos), conviene que la varianza también sea aleatoria. Heston (1993) propone esto, y Bates (1996) lo combina con los saltos de Merton. Para la investigación sirve para tres cosas:
 
+1. Darle **dinámica a la varianza**, lo que permite hablar de una estructura temporal y no solo de un nivel.
+2. **Separar el efecto de la volatilidad estocástica del de los saltos**, comparando directamente con Merton.
+3. Cambiar la lectura del *strike*: la parte continua deja de ser $\sigma^2$ y pasa a ser la varianza esperada promedio.
 
-### 4. Modelo de Heston y modelo de Bates (SV + saltos)
+---
 
-#### 4.1 Heston (1993)
+## Estructura del modelo
 
-$$
-\begin{aligned}
-\frac{dS_t}{S_t}&=(r-q)\, dt+\sqrt{v_t}\, dW_t^{S},\\
-dv_t&=\kappa(\theta-v_t)\, dt+\xi\sqrt{v_t}\, dW_t^{v},\qquad d\langle W^S,W^v\rangle_t=\rho\, dt .
-\end{aligned}
-$$
+### La varianza como proceso aleatorio (Heston)
 
-**Parámetros (5):** $v_0,\kappa,\theta,\xi,\rho$. (Bajo $\mathbb{Q}$, $\kappa=\kappa^{\mathbb{P}}+\lambda_v$ y $\theta=\kappa^{\mathbb{P}}\theta^{\mathbb{P}}/\kappa$ si la prima de riesgo de varianza es $\lambda_v v$.)
-
-* **Condición de Feller:** $2\kappa\theta\ge\xi^2$ garantiza $v_t>0$. Las calibraciones a opciones de corto plazo frecuentemente la violan; es aceptable si el esquema de simulación maneja $v=0$ (QE, §8).
-* **Esperanza de la varianza instantánea:** $\mathbb{E}[v_t]=\theta+(v_0-\theta)e^{-\kappa t}$.
-* **Strike bajo Heston:**
+Heston modela la varianza instantánea $v_t=\sigma_t^2$ con el siguiente proceso:
 
 $$
-K^{QV}_H=K^{\text{repl}}_H=\frac1T\,\mathbb{E}\!\int_0^Tv_t\, dt=\theta+\frac{(v_0-\theta)\big(1-e^{-\kappa T}\big)}{\kappa T}.
+dv_t=\kappa(\theta-v_t)\,dt+\xi\sqrt{v_t}\,dW_t^{v} \tag{14}
 $$
 
-#### 4.2 Bates (1996)
+* $\theta$: nivel de largo plazo al que la varianza tiende a volver.
+* $\kappa$: velocidad con la que vuelve a $\theta$ (reversión a la media).
+* $\xi$: volatilidad de la volatilidad, es decir, cuánto fluctúa la varianza al azar.
+* $v_0$: varianza de hoy.
+
+La raíz cuadrada hace que la varianza se mueva más cuando ya es alta (los periodos turbulentos se agrupan) y, si se cumple la **condición de Feller** $2\kappa\theta\ge\xi^2$, impide que $v_t$ llegue a ser negativa.
+
+El ruido de la varianza está correlacionado con el del precio: $d\langle W^S,W^v\rangle_t=\rho\,dt$. Normalmente $\rho<0$: cuando el precio cae, la varianza sube (efecto apalancamiento), y eso produce la asimetría negativa del *smile* en la parte de difusión.
+
+> **Nota explicativa sobre el cálculo estocástico:**
+> Con dos brownianos correlacionados se cumple $(dW_t^S)^2=(dW_t^v)^2=dt$, pero el término cruzado ya no se anula: $dW_t^S\,dW_t^v=\rho\,dt$. Los saltos siguen siendo independientes de ambos: $dN_t\,dW_t^S=dN_t\,dW_t^v=0$ y $(dN_t)^2=dN_t$, como en Merton.
+
+**¿Cuánta varianza esperamos en promedio?** Esto es lo que necesita el variance swap, porque el contrato paga el promedio de $v_t$. Al tomar esperanza en (14), la parte aleatoria desaparece (la esperanza de una integral de Itô es cero) y queda una ecuación simple para $\mathbb{E}[v_t]$, cuya solución es
 
 $$
-\begin{aligned}
-\frac{dS_t}{S_{t^-}}&=(r-q-\lambda k)\, dt+\sqrt{v_t}\, dW_t^{S}+(e^{J}-1)\, dN_t,\\
-dv_t&=\kappa(\theta-v_t)\, dt+\xi\sqrt{v_t}\, dW_t^{v},\qquad d\langle W^S,W^v\rangle_t=\rho\, dt,
-\end{aligned}
+\mathbb{E}[v_t]=\theta+(v_0-\theta)\,e^{-\kappa t},\qquad
+\bar v(T):=\frac1T\,\mathbb{E}\!\int_0^T v_t\,dt=\theta+\frac{(v_0-\theta)\big(1-e^{-\kappa T}\big)}{\kappa T} . \tag{15}
 $$
 
-con $N_t$ y $J\sim\mathcal{N}(\mu_J,\sigma_J^2)$ independientes de $(W^S,W^v)$. **Parámetros (8):** $v_0,\kappa,\theta,\xi,\rho,\lambda,\mu_J,\sigma_J$.
+En palabras: $\bar v(T)$ es un promedio entre la varianza de hoy $v_0$ y la de largo plazo $\theta$. Es el equivalente de $\sigma^2$ en Merton.
 
-#### 4.3 Función característica (formulación estable, "Little Heston Trap")
+### Bates: Heston más los saltos de Merton
 
-$$
-\varphi_B(u)=\exp\Big\{iu\big[\ln S_0+(r-q)T\big]+C(u,T)+D(u,T)\,v_0+\lambda T\big(e^{iu\mu_J-\frac12\sigma_J^2u^2}-1-iuk\big)\Big\},
-$$
-
-con
+Bates simplemente le agrega a Heston el mismo proceso de saltos de la sección anterior. Bajo $\mathbb{Q}$ (con dividendo continuo $q$ se cambia $r$ por $r-q$):
 
 $$
-\begin{aligned}
-b&=\kappa-\rho\,\xi\,iu,\qquad d=\sqrt{b^2+\xi^2(iu+u^2)},\qquad g=\frac{b-d}{b+d},\\
-D&=\frac{b-d}{\xi^2}\cdot\frac{1-e^{-dT}}{1-g\,e^{-dT}},\\
-C&=\frac{\kappa\theta}{\xi^2}\Big[(b-d)\,T-2\ln\frac{1-g\,e^{-dT}}{1-g}\Big].
-\end{aligned}
+\boxed{\frac{dS_t}{S_{t^-}}=(r-\lambda k)\,dt+\sqrt{v_t}\,dW_t^{S}+(e^{J}-1)\,dN_t} \tag{16}
 $$
 
-Esta forma (Albrecher, Mayer, Schoutens y Tistaert, 2007) evita las discontinuidades de la rama del logaritmo del formulismo original de Heston. Proviene de resolver el sistema de Riccati
+$$
+\boxed{dv_t=\kappa(\theta-v_t)\,dt+\xi\sqrt{v_t}\,dW_t^{v},\qquad d\langle W^S,W^v\rangle_t=\rho\,dt} \tag{17}
+$$
+
+donde $N_t$, $J\sim\mathcal{N}(\mu_J,\sigma_J^2)$ y $k=e^{\mu_J+\frac12\sigma_J^2}-1$ son los mismos de Merton. El modelo tiene **8 parámetros**: cinco de Heston $(v_0,\kappa,\theta,\xi,\rho)$ y tres de saltos $(\lambda,\mu_J,\sigma_J)$. Si apagamos ingredientes, recuperamos los modelos anteriores:
+
+| Si... | El modelo se reduce a... |
+|-------|--------------------------|
+| $\lambda=0$ | Heston |
+| $\xi=0$ y $v_0=\theta$ (varianza constante) | Merton, con $\sigma^2=\theta$ |
+| $\lambda=0$, $\xi=0$ y $v_0=\theta$ | Black–Scholes |
+
+Esto es la base del experimento anidado: Black–Scholes $\to$ Merton $\to$ Heston $\to$ Bates, agregando **un solo ingrediente a la vez**, para poder atribuir cada cambio en el *strike* a una causa concreta. Como en Merton, los parámetros calibrados son bajo $\mathbb{Q}$ (incluyen primas de riesgo), lo que los hace comparables con el mercado.
+
+---
+
+## El log-precio: Itô con volatilidad estocástica y saltos
+
+El procedimiento es el mismo de Merton, cambiando $\sigma^2$ por $v_t$: entre saltos aparece el ajuste de convexidad $-\frac12v_t\,dt$, y en un salto el log-precio cambia en $J$.
+
+$$
+\boxed{d(\ln S_t)=\Big(r-\lambda k-\tfrac12 v_t\Big)dt+\sqrt{v_t}\,dW_t^{S}+J\,dN_t} \tag{18}
+$$
+
+Lo importante es que al integrar aparece $\int_0^T v_t\,dt$, que es justamente la **varianza realizada** de la primera sección. En Merton esa integral valía $\sigma^2T$ (fija); ahora es aleatoria, y lo que nos interesa de ella es su esperanza.
+
+---
+
+## Función característica
+
+Igual que en Merton, para valorar opciones con Fourier necesitamos $\varphi_B(u)=\mathbb{E}^{\mathbb{Q}}[e^{iu\ln S_T}]$. Como la parte de Heston y los saltos son independientes, la función característica es el **producto** de ambas. La parte de saltos ya la tenemos de (8); la de Heston sale así:
+
+1. La esperanza condicional $\mathbb{E}[e^{iu\ln S_T}\mid S_t,v_t]$ es una martingala, así que al aplicarle Itô su *drift* debe ser cero. Eso da una ecuación en derivadas parciales.
+2. Heston es un modelo **afín**, entonces se propone una solución de la forma $\exp\{iu\ln S_t+C(\tau)+D(\tau)v_t\}$, con $\tau=T-t$. Al sustituirla y separar los términos que contienen $v$ de los que no, quedan dos ecuaciones diferenciales ordinarias (tipo Riccati):
 
 $$
 \partial_\tau D=\tfrac12\xi^2D^2+(\rho\xi iu-\kappa)D-\tfrac12(u^2+iu),\qquad
-\partial_\tau C=\kappa\theta D+iu(r-q),\qquad D(0)=C(0)=0 .
+\partial_\tau C=\kappa\theta D+iu(r-q),\qquad D(0)=C(0)=0 . \tag{19}
 $$
 
-#### 4.4 Fair strike bajo Bates
-
-Como la parte de difusión y la parte de salto son independientes,
+3. La primera es cuadrática en $D$ y se resuelve de forma explícita. Con $b=\kappa-\rho\xi\,iu$, $d=\sqrt{b^2+\xi^2(iu+u^2)}$ y $g=\frac{b-d}{b+d}$:
 
 $$
-K^{QV}_B=\underbrace{\theta+\frac{(v_0-\theta)(1-e^{-\kappa T})}{\kappa T}}_{\text{volatilidad estocástica}}+\underbrace{\lambda\,(\mu_J^2+\sigma_J^2)}_{\text{saltos (QV)}},
+D=\frac{b-d}{\xi^2}\cdot\frac{1-e^{-dT}}{1-g\,e^{-dT}},\qquad
+C=\frac{\kappa\theta}{\xi^2}\Big[(b-d)\,T-2\ln\frac{1-g\,e^{-dT}}{1-g}\Big]+iu(r-q)T . \tag{20}
 $$
 
-$$
-K^{\text{repl}}_B=\theta+\frac{(v_0-\theta)(1-e^{-\kappa T})}{\kappa T}+2\lambda\big(k-\mu_J\big).
-$$
-
-(Demostración de $K^{\text{repl}}_B$: $\mathbb{E}\int dS/S=(r-q)T$ y $\mathbb{E}[\ln S_T/S_0]=(r-q-\lambda k+\lambda\mu_J)T-\tfrac12\mathbb{E}\int v\, dt$, de donde $\tfrac2T\mathbb{E}[\int dS/S-\ln S_T/S_0]=\tfrac1T\mathbb{E}\int v\, dt+2\lambda(k-\mu_J)$.)
-
-**Prueba de consistencia obligatoria:** la integral de replicación de §2.3 evaluada con precios de opciones del modelo (Fourier) debe reproducir $K^{\text{repl}}$ analítico. Es un test unitario de todo el pipeline (verificado numéricamente con error relativo $<10^{-6}$).
-
-**Descomposición por componentes:** dado que $K^{\text{repl}}_B-K^{\text{repl}}_M$ depende de que $\sigma^2$ sea reemplazado por el término de volatilidad estocástica, el experimento anidado recomendado es
+(Esta es la versión estable de Albrecher et al. (2007), *Little Heston Trap*, que evita problemas numéricos con el logaritmo complejo.) Multiplicando por la parte de saltos, incluido el compensador $-iu\lambda kT$:
 
 $$
-\text{BS}\ \to\ \text{Merton (+saltos)}\ \to\ \text{Heston (+SV)}\ \to\ \text{Bates (+SV+saltos)},
+\boxed{\varphi_B(u)=\exp\Big\{iu\ln S_0+C(u,T)+D(u,T)\,v_0+\lambda T\Big(e^{iu\mu_J-\frac12\sigma_J^2u^2}-1-iuk\Big)\Big\}} \tag{21}
 $$
 
-reportando, para cada evento, la contribución de cada componente al strike y su cambio marginal.
+**Verificación de martingala.** En $u=-i$ debe resultar el *forward*: la parte de saltos vale $\lambda T(1+k-1-k)=0$, y en la de Heston $d=b$, por lo que $g=0$, $D=0$ y $C=(r-q)T$. Así $\varphi_B(-i)=S_0e^{(r-q)T}=F_0$.
 
-#### 4.5 Qué aporta cada componente en near-expiry
-
-* **Saltos:** generan skew/curvatura que *no desaparece* cuando $T\to0$ (el smile en wings se hace más pronunciado con vencimientos cortos). Son el motor del smile en 5–10 días.
-* **Volatilidad estocástica con $\rho<0$:** aporta skew de nivel casi constante en $T$ y, sobre todo, la **dinámica** de la varianza (mean-reversion) que gobierna la estructura a plazo. En un solo vencimiento corto, $(\kappa,\theta,v_0)$ están débilmente identificados (§7).
-* **Limitación conocida:** Bates homogéneo produce curvas de varianza esperada *monótonas* en $T$ (regresan suavemente a $\theta$), por lo que no reproduce un escalón por evento.
+> **Relevancia para la investigación:**
+> A diferencia de Merton, aquí no hay una serie como (9): al fijar el número de saltos, lo que queda es un Heston y no un Black–Scholes. Por eso en Bates los precios de opciones se calculan solo por Fourier, y $\varphi_B(-i)=F_0$ es la primera prueba numérica en cada calibración.
 
 ---
+
+## El variance swap bajo Bates
+
+Repetimos el análisis de Merton: comparamos lo que **paga** el contrato con lo que **replica** la tira de opciones. Todo es igual, solo que $\sigma^2$ se reemplaza por $v_t$.
+
+**Lo que paga el contrato.** Al elevar (18) al cuadrado con las reglas de la nota, la variación cuadrática es $[X]_T=\int_0^Tv_t\,dt+\sum_{i=1}^{N_T}J_i^2$. Su esperanza, con (15), $\mathbb{E}[N_T]=\lambda T$ y $\mathbb{E}[J^2]=\mu_J^2+\sigma_J^2$, es
+
+$$
+\boxed{K^{QV}_B=\bar v(T)+\lambda\,(\mu_J^2+\sigma_J^2)} \tag{22}
+$$
+
+**Lo que replica la tira de opciones.** Como en Merton, Carr–Madan es una identidad válida con saltos y $\mathbb{E}[\int dS_t/S_{t^-}]=rT$ se mantiene gracias al compensador. Restando (16) y (18) se obtiene $\frac{dS_t}{S_{t^-}}-d\ln S_t=\frac12v_t\,dt+(e^{J}-1-J)\,dN_t$, y al integrar y tomar esperanza:
+
+$$
+\boxed{K^{\text{repl}}_B=\bar v(T)+2\lambda\,(k-\mu_J)} \tag{23}
+$$
+
+Es la ecuación (13) de Merton con $\sigma^2$ reemplazada por $\bar v(T)$.
+
+**El sesgo no cambia.** Al restar (22) a (23), la parte continua $\bar v(T)$ se cancela:
+
+$$
+\boxed{K^{\text{repl}}_B-K^{QV}_B=2\lambda\,\mathbb{E}\Big[e^{J}-1-J-\tfrac12J^2\Big]\approx\frac{\lambda}{3}\,\mathbb{E}[J^3]} \tag{24}
+$$
+
+Es el mismo resultado de la sección 1 y de Merton. La conclusión es que **la volatilidad estocástica, por sí sola, no genera sesgo de replicación**: en un Heston puro las trayectorias son continuas y $K^{QV}_H=K^{\text{repl}}_H=\bar v(T)$. El sesgo viene únicamente de los saltos.
+
+**Resumen de los cuatro modelos:**
+
+| Modelo | $K^{QV}$ | $K^{\text{repl}}$ |
+|--------|----------|-------------------|
+| Black–Scholes | $\sigma^2$ | $\sigma^2$ |
+| Merton | $\sigma^2+\lambda(\mu_J^2+\sigma_J^2)$ | $\sigma^2+2\lambda(k-\mu_J)$ |
+| Heston | $\bar v(T)$ | $\bar v(T)$ |
+| Bates | $\bar v(T)+\lambda(\mu_J^2+\sigma_J^2)$ | $\bar v(T)+2\lambda(k-\mu_J)$ |
+
+> **Relevancia para la investigación:**
+> En la práctica los parámetros de salto calibrados serán distintos en Merton y en Bates, porque parte del *smile* que Merton explica con saltos grandes puede quedar absorbida por $\rho$ y $\xi$ en Bates. Por eso lo relevante no es solo cuánto cambia $K$, sino **cuánto del $K$ viene de los saltos** en cada modelo: $2\lambda(k-\mu_J)/K^{\text{repl}}$.
+
+**Ejemplo numérico** (parámetros sintéticos: $T=7/252$, $\kappa=3$, $\theta=0.09$, $\xi=0.5$, $\rho=-0.6$, y saltos $\lambda=36$, $\mu_J=-1\%$, $\sigma_J=6\%$, de modo que $\lambda T=1$). Variamos solo $v_0$; los valores de $K^{\text{repl}}_B$ coinciden, con error relativo del orden de $10^{-6}$, con la integral (4) evaluada sobre precios de Fourier calculados con (21):
+
+| $v_0$ | $\bar v(T)$ | $K^{\text{repl}}_B$ | $K^{QV}_B$ |
+|:-----:|:-----------:|:-------------------:|:----------:|
+| 0.06 | 0.0612 | 0.1932 | 0.1944 |
+| 0.09 | 0.0900 | 0.2220 | 0.2232 |
+| 0.12 | 0.1188 | 0.2508 | 0.2520 |
+
+Dos observaciones: la brecha $K^{QV}_B-K^{\text{repl}}_B\approx0.0012$ es **igual en las tres filas** (solo depende de los saltos, como dice (24)); y la fila $v_0=\theta$ coincide con Merton con $\sigma^2=0.09$ y los mismos saltos.
+
+Además, a 7 días la reversión a la media casi no actúa: $\bar v(T)\approx v_0+\tfrac{\kappa(\theta-v_0)}{2}T$, y el peso de $v_0-\theta$ en (15) es $0.96$ a 7 días frente a $0.32$ a un año. Es decir, en near-expiry la parte continua del *strike* es casi $v_0$, y por eso $\kappa$ y $\theta$ quedan mal identificados con un solo vencimiento corto.
+
+---
+
+## Varianza forward y estructura temporal
+
+Con parámetros constantes, $T\,K^{\text{repl}}_B(T)=\int_0^T\mathbb{E}[v_t]\,dt+2\lambda T(k-\mu_J)$. Usando la varianza *forward* de la sección 1, $K_{T_1,T_2}=\frac{T_2K_{T_2}-T_1K_{T_1}}{T_2-T_1}$, queda
+
+$$
+K^{\text{repl}}_{B}(T_1,T_2)=\theta+\frac{(v_0-\theta)\big(e^{-\kappa T_1}-e^{-\kappa T_2}\big)}{\kappa\,(T_2-T_1)}+2\lambda\,(k-\mu_J). \tag{25}
+$$
+
+La curva $\mathbb{E}[v_t]$ de (15) es **monótona** (va suave de $v_0$ a $\theta$) y la parte de saltos es constante en el tiempo. Por eso un Bates con parámetros constantes **no puede producir un escalón** de varianza en la fecha del anuncio, que es justo lo que se observa en los vencimientos que lo rodean.
+
+Para recuperar el escalón se separa, como en la sección de saltos genéricos y de *earnings*, entre los saltos aleatorios $(\lambda_c,J_c)$ y el salto programado $J_{EA}$ en la fecha conocida $\tau$:
+
+$$
+T\,K^{\text{repl}}(T)=\int_0^T\mathbb{E}[v_t]\,dt+2\lambda_cT\,\mathbb{E}\big[e^{J_c}-1-J_c\big]+\mathbb{1}_{\tau\le T}\,2\,\mathbb{E}\big[e^{J_{EA}}-1-J_{EA}\big] . \tag{26}
+$$
+
+Para la variación cuadrática es igual, con $J^2$ en lugar de $2(e^{J}-1-J)$. Esta es la descomposición unificada de la sección 1 con $\sigma_t^2$ reemplazada por $v_t$. En la varianza *forward* entre $T_1<\tau\le T_2$, el último término no se cancela y queda concentrado en ese intervalo; así aparece el escalón.
+
+> **Relevancia para la investigación:**
+> Un Bates homogéneo solo explica una caída gradual de la varianza (vía reversión a $\theta$). Para reproducir el *vol crush* se necesitan parámetros que dependan del tiempo, por ejemplo una intensidad $\lambda(t)$ concentrada en $\tau$ o un reajuste de $v_t$ en esa fecha. Eso se desarrolla en la sección del evento de *earnings*.
+
+---
+
+## Importancia en la investigación y límites del modelo
+
+**Qué aporta:**
+
+* Separar volatilidad estocástica y saltos, gracias a la tabla de los cuatro modelos y al experimento anidado.
+* Dejar claro que el sesgo de replicación (24) viene solo de los saltos, así que un error de pricing de Bates frente al mercado no se puede atribuir a la volatilidad estocástica por sí misma.
+* Conectar con la varianza *forward* de la sección 1 a través de (25) y (26).
+
+**Límites:**
+
+* **Identificación:** 8 parámetros y un vencimiento corto; $\kappa$ y $\theta$ casi no influyen a 7 días, así que hay que calibrar varios vencimientos a la vez o fijar algunos parámetros.
+* **Un solo salto gaussiano:** igual que Merton, no reproduce densidades bimodales ni curvas de volatilidad implícita cóncavas observadas antes de algunos anuncios (Alexiou, Goyal, Kostakis y Rompolis, 2025; Kachhara, Markin y Singh, 2023).
+* **Parámetros constantes en el tiempo:** impiden reproducir el escalón y el *vol crush*, como se vio en (25).
+* **Saltos independientes de la varianza:** un salto no modifica la varianza posterior. Los modelos con saltos también en $v_t$ (Duffie, Pan y Singleton, 2000; Eraker, Johannes y Polson, 2003) relajan esto, pero tienden a generar alzas de varianza, no colapsos.
+
+
+
 
 ### 5. Modelar el evento de earnings y el vol crush
 
