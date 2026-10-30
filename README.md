@@ -561,14 +561,11 @@ donde $N_t$, $J\sim\mathcal{N}(\mu_J,\sigma_J^2)$ y $k=e^{\mu_J+\frac12\sigma_J^
 | $\lambda=0$ | Heston - Desaparece la parte de Poisson dejando solo volatilidad estocástica. |
 | $\xi=0$ y $v_0=\theta$ (varianza constante) | Merton, con $\sigma^2=\theta$ - La varianza deja de ser aleatoria y se vuelve constante manteniendo únicamente los saltos. |
 | $\lambda=0$, $\xi=0$ y $v_0=\theta$ | Black–Scholes - Eliminamos saltos y varianza aleatoria. Queda el movimiento browniano geométrico estándar con volatilidad constante.|
-
-Esto es la base del experimento anidado: Black–Scholes $\to$ Merton $\to$ Heston $\to$ Bates, agregando **un solo ingrediente a la vez**, para poder atribuir cada cambio en el *strike* a una causa concreta. Como en Merton, los parámetros calibrados son bajo $\mathbb{Q}$ (incluyen primas de riesgo), lo que los hace comparables con el mercado.
-
 ---
 
 ## El log-precio: Itô con volatilidad estocástica y saltos
 
-El procedimiento es el mismo de Merton, cambiando $\sigma^2$ por $v_t$: entre saltos aparece el ajuste de convexidad $-\frac12v_t\,dt$, y en un salto el log-precio cambia en $J$.
+El procedimiento es el mismo de Merton, cambiando $\sigma^2$ por $v_t$ y variando el salto: En Black-Scholes o Merton, este término era una constante fija ($-\frac{1}{2} \sigma^2 dt$), ahora varía segundo a segundo porque depende de la varianza estocástica $v_t$.En el caso del salto, cuando este ocurre($dN_t = 1$), el log-precio simplemente se incrementa o decrece en la cantidad $J$ (a diferencia de $S_t$, donde el cambio era multiplicativo por $e^J - 1$).
 
 $$
 \boxed{d(\ln S_t)=\Big(r-\lambda k-\tfrac12 v_t\Big)dt+\sqrt{v_t}\,dW_t^{S}+J\,dN_t} \tag{18}
