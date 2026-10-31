@@ -659,24 +659,6 @@ Además, a 7 días la reversión a la media casi no actúa: $\bar v(T)\approx v_
 
 ---
 
-## Varianza forward y estructura temporal
-
-Con parámetros constantes, $T\,K^{\text{repl}}_B(T)=\int_0^T\mathbb{E}[v_t]\,dt+2\lambda T(k-\mu_J)$. Usando la varianza *forward* de la sección 1, $K_{T_1,T_2}=\frac{T_2K_{T_2}-T_1K_{T_1}}{T_2-T_1}$, queda
-
-$$
-K^{\text{repl}}_{B}(T_1,T_2)=\theta+\frac{(v_0-\theta)\big(e^{-\kappa T_1}-e^{-\kappa T_2}\big)}{\kappa\,(T_2-T_1)}+2\lambda\,(k-\mu_J). \tag{25}
-$$
-
-La curva $\mathbb{E}[v_t]$ de (15) es **monótona** (va suave de $v_0$ a $\theta$) y la parte de saltos es constante en el tiempo. Por eso un Bates con parámetros constantes **no puede producir un escalón** de varianza en la fecha del anuncio, que es justo lo que se observa en los vencimientos que lo rodean.
-
-Para recuperar el escalón se separa, como en la sección de saltos genéricos y de *earnings*, entre los saltos aleatorios $(\lambda_c,J_c)$ y el salto programado $J_{EA}$ en la fecha conocida $\tau$:
-
-$$
-T\,K^{\text{repl}}(T)=\int_0^T\mathbb{E}[v_t]\,dt+2\lambda_cT\,\mathbb{E}\big[e^{J_c}-1-J_c\big]+\mathbb{1}_{\tau\le T}\,2\,\mathbb{E}\big[e^{J_{EA}}-1-J_{EA}\big] . \tag{26}
-$$
-
-Para la variación cuadrática es igual, con $J^2$ en lugar de $2(e^{J}-1-J)$. Esta es la descomposición unificada de la sección 1 con $\sigma_t^2$ reemplazada por $v_t$. En la varianza *forward* entre $T_1<\tau\le T_2$, el último término no se cancela y queda concentrado en ese intervalo; así aparece el escalón.
-
 > **Relevancia para la investigación:**
 > Un Bates homogéneo solo explica una caída gradual de la varianza (vía reversión a $\theta$). Para reproducir el *vol crush* se necesitan parámetros que dependan del tiempo, por ejemplo una intensidad $\lambda(t)$ concentrada en $\tau$ o un reajuste de $v_t$ en esa fecha. Eso se desarrolla en la sección del evento de *earnings*.
 
