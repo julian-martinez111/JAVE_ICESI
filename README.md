@@ -208,21 +208,6 @@ La función $g$ tiene $g(0)=g'(0)=g''(0)=0$ y $g'''(x)=e^{x}>0$, de donde:
 
 * $g(x)=\tfrac16x^3+\tfrac1{24}x^4+\cdots\approx\tfrac16x^3$ para saltos moderados (el error es de **tercer orden**);
 * $g(x)$ tiene siempre el **mismo signo que $x$**: un salto bajista siempre resta, uno alcista siempre suma.
-
-### El sesgo de replicación
-
-Tomando esperanza bajo $\mathbb{Q}$ (con $\mathbb{E}\sum g(\, delta X_s)=\lambda T\,\mathbb{E}[g(J)]$):
-
-$$
-\boxed{K^{\text{repl}}-K^{QV}=2\lambda\,\mathbb{E}\!\left[e^{J}-1-J-\tfrac12J^2\right]\approx\frac{\lambda}{3}\,\mathbb{E}[J^3]}
-$$
-
-donde $K^{\text{repl}}=\mathbb{E}^{\mathbb{Q}}[R_T]/T$ es el valor que entrega la tira de opciones en las ecuaciones (3)-(4) (depende solo de precios de opciones observados) y $K^{QV}=\mathbb{E}^{\mathbb{Q}}\big[[X]_T\big]/T$ es la esperanza de la varianza que el contrato paga en el límite de muestreo fino.
-
-* Si los saltos son negativos en media, $\mathbb{E}[J^3]<0$ y $K^{\text{repl}}<K^{QV}$: el *strike* *model-free* de las ecuaciones (3)-(4) **subestima** la varianza cuadrática esperada.
-* Lo que el swap paga es $\approx K^{QV}$, **no** $K^{\text{repl}}$. Al comparar modelo contra mercado hay que reportar ambas cantidades y no mezclar definiciones.
-* Para quien vende el swap y se cubre con la réplica, el descalce es $R_T-[X]_T$: pierde con saltos bajistas y gana con alcistas, con un efecto cúbico en el tamaño del salto. Es consistente con lo que señalan Carr y Lee (2009) sobre la exposición de estos contratos a retornos al cubo y de orden superior en movimientos bruscos.
-* El resultado no es una curiosidad teórica: Broadie y Jain (2008) encuentran que el efecto del muestreo discreto suele ser pequeño mientras que el de los saltos puede ser significativo. Carr, Lee y Lorig (2021) desarrollan réplicas robustas para difusiones con saltos de actividad finita y tamaño acotado.
 ---
 
 ## Varianza forward y estructura temporal
