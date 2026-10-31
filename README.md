@@ -413,8 +413,9 @@ $$
 
 Si condicionamos el sistema a que ocurran exactamente $n$ saltos ($N_T=n$), el log-precio resultante adopta una distribución perfectamente normal, lo que significa que cada término puede resolverse mediante una fórmula clásica de Black–Scholes, ajustando adecuadamente sus parámetros equivalentes $(\sigma_n,r_n)$:
 
-- **Varianza total ajustada:** $\sigma_n^2T=v_n=\sigma^2T+n\sigma_J^2$, lo que se traduce en una volatilidad equivalente $\sigma_n^2=\sigma^2+\, dfrac{n\sigma_J^2}{T}$.
-- **Tasa *forward* ajustada:** $\mathbb{E}[S_T \mid N_T=n]=S_0\exp\big((r-\lambda k)T+n(\mu_J+\tfrac{1}{2}\sigma_J^2)\big)=S_0e^{r_nT}$, lo que define una tasa de interés modificada $r_n=r-\lambda k+\, dfrac{n\ln(1+k)}{T}$.
+- **Varianza total ajustada:** $\sigma_n^2T=v_n=\sigma^2T+n\sigma_J^2$, lo que se traduce en una volatilidad equivalente $\sigma_n^2=\sigma^2+\frac{n\sigma_J^2}{T}$.
+
+- **Tasa *forward* ajustada:** $\mathbb{E}[S_T \mid N_T=n]=S_0\exp\big((r-\lambda k)T+n(\mu_J+\tfrac{1}{2}\sigma_J^2)\big)=S_0e^{r_nT}$, lo que define una tasa de interés modificada $r_n=r-\lambda k+\frac{n\ln(1+k)}{T}$.
   
 Mientras que el modelo de Black–Scholes estándar descuenta los flujos usando la tasa $r_n$ a través de $e^{-r_nT}$, el descuento correcto en este marco exige utilizar la tasa libre de riesgo $r$ mediante $e^{-rT}$. El factor de corrección necesario es $e^{(r_n-r)T}=e^{-\lambda kT}(1+k)^n$, el cual, al combinarse con las probabilidades del peso de Poisson, nos deja con:
 
