@@ -413,11 +413,11 @@ $$
 
 Si condicionamos el sistema a que ocurran exactamente $n$ saltos ($N_T=n$), el log-precio resultante adopta una distribución perfectamente normal, lo que significa que cada término puede resolverse mediante una fórmula clásica de Black–Scholes, ajustando adecuadamente sus parámetros equivalentes $(\sigma_n,r_n)$:
 
-- **Varianza total ajustada:** $\sigma_n^2T=v_n=\sigma^2T+n\sigma_J^2$, lo que se traduce en una volatilidad equivalente $\sigma_n^2=\sigma^2+\frac{n\sigma_J^2}{T}$.
+- **Varianza total ajustada:** $\sigma_n^2T=v_n=\sigma^2T+n\sigma_J^2$, lo que se traduce en una volatilidad equivalente $\sigma_n^2=\sigma^2+\frac{n\sigma_J^2}{T}$.La varianza total del periodo ya no es solo la difusión normal ($σ2T$), sino que se le suma la varianza extra que aportaron esos n saltos.
 
-- **Tasa *forward* ajustada:** $\mathbb{E}[S_T \mid N_T=n]=S_0\exp\big((r-\lambda k)T+n(\mu_J+\tfrac{1}{2}\sigma_J^2)\big)=S_0e^{r_nT}$, lo que define una tasa de interés modificada $r_n=r-\lambda k+\frac{n\ln(1+k)}{T}$.
+- **Tasa *forward* ajustada:** $\mathbb{E}[S_T \mid N_T=n]=S_0\exp\big((r-\lambda k)T+n(\mu_J+\tfrac{1}{2}\sigma_J^2)\big)=S_0e^{r_nT}$, lo que define una tasa de interés modificada $r_n=r-\lambda k+\frac{n\ln(1+k)}{T}$. Como los saltos empujan el precio hacia arriba o hacia abajo, la tasa de interés se modifica para absorber el impacto de la prima de riesgo de los saltos $λk$.
   
-Mientras que el modelo de Black–Scholes estándar descuenta los flujos usando la tasa $r_n$ a través de $e^{-r_nT}$, el descuento correcto en este marco exige utilizar la tasa libre de riesgo $r$ mediante $e^{-rT}$. El factor de corrección necesario es $e^{(r_n-r)T}=e^{-\lambda kT}(1+k)^n$, el cual, al combinarse con las probabilidades del peso de Poisson, nos deja con:
+Mientras que el modelo de Black–Scholes estándar descuenta los flujos usando la tasa $r_n$ a través de $e^{-r_nT}$, el descuento correcto en este marco exige utilizar la tasa libre de riesgo $r$ mediante $e^{-rT}$. El factor de corrección necesario es $e^{(r_n-r)T}=e^{-\lambda kT}(1+k)^n$, el cual, al combinarse con las probabilidades de Poisson, nos deja con:
 
 $$
 e^{-\lambda T}\frac{(\lambda T)^n}{n!}\,e^{-\lambda kT}(1+k)^n=\frac{e^{-\lambda' T}(\lambda' T)^n}{n!},\qquad \lambda'=\lambda(1+k).
@@ -432,17 +432,17 @@ $$
 Los valores para las opciones *put* se derivan directamente aplicando la paridad *put-call* (la cual se cumple sin problemas gracias a que la condición $\mathbb{E}[S_T]=F_0$ se preserva).
 
 
-> La ecuación (9) representa una **mezcla ponderada de distribuciones de Poisson sobre modelos Black–Scholes**: cada escenario con $n$ saltos cuenta con su propia volatilidad efectiva $\sigma_n$, y la combinación de estas distintas volatilidades es lo que genera de forma natural el *smile* observado. Dado que en las ventanas de resultados corporativos el parámetro $\lambda' T\approx1$, los pesos de la serie decrecen rápidamente de forma factorial, por lo que bastan entre 15 y 20 términos para lograr una convergencia perfecta. Esta serie funciona como un método de validación cruzada independiente frente al enfoque de Fourier: ambos procedimientos deben arrojar exactamente los mismos precios.
+> La ecuación (9) representa una **mezcla ponderada de distribuciones de Poisson sobre modelos Black–Scholes**: cada escenario con $n$ saltos cuenta con su propia volatilidad efectiva $\sigma_n$, y la combinación de estas distintas volatilidades es lo que genera de forma natural el *smile* observado. Dado que en las ventanas de resultados corporativos el parámetro $\lambda' T\approx1$, los pesos de la serie decrecen, por lo que bastan entre 15 y 20 términos para lograr una convergencia perfecta.
 
 ---
 
 ## El variance swap bajo Merton: qué se rompe con saltos
 
-Una vez establecida la arquitectura matemática del modelo de saltos, podemos analizar con precisión quirúrgica qué partes de los resultados anteriores siguen vigentes. Para ello, compararemos el pago real que efectúa el contrato frente a la cantidad que logra replicar la cartera estática de opciones.
+Una vez establecida la arquitectura matemática del modelo de saltos, podemos analizar qué partes de los resultados anteriores siguen vigentes. Para ello, compararemos el pago real que efectúa el contrato frente a la cantidad que logra replicar la cartera estática de opciones.
 
 ### Lo que paga el contrato: la variación cuadrática
 
-Por definición, la varianza realizada que liquida el contrato al vencimiento corresponde a la suma de los cuadrados de los log-retornos observados. Al refinar la partición temporal de la muestra, esta sumatoria converge analíticamente hacia la **variación cuadrática** del proceso del log-precio, denotada por $[X]_T$, la cual absorbe de forma natural el impacto de los saltos. Aplicando las reglas de cálculo estocástico $(dW_t)^2=dt$, $(dN_t)^2=dN_t$ y $dW_t\, dN_t=0$ sobre el diferencial (6):
+Por definición, la varianza realizada que liquida el contrato al vencimiento corresponde a la suma de los cuadrados de los log-retornos ocurridos en la vida del contrato. Esta sumatoria va a converger hacia la **variación cuadrática** del proceso del log-precio, denotada por $[X]_T$, la cual absorbe el impacto de los saltos y aumenta la varianza de forma desmedida. Aplicando las reglas de cálculo estocástico $(dW_t)^2=dt$, $(dN_t)^2=dN_t$ y $dW_t\, dN_t=0$ sobre el diferencial (6):
 
 $$
 (d\ln S_t)^2=\sigma^2\, dt+J^2\, dN_t\ \ \Longrightarrow\ \ [X]_T=\sigma^2T+\sum_{i=1}^{N_T}J_i^2 . \tag{10}
@@ -454,7 +454,7 @@ $$
 \boxed{K^{QV}=\frac{1}{T}\mathbb{E}^{\mathbb{Q}}\big[[X]_T\big]=\sigma^2+\lambda\,(\mu_J^2+\sigma_J^2)} \tag{11}
 $$
 
-> La diferencia $K^{QV}-\sigma^2=\lambda(\mu_J^2+\sigma_J^2)$, multiplicada por el horizonte $T$, representa exactamente la **varianza de evento** asociada al anuncio de earnings: $\varepsilon=\mathbb{E}\big[\sum_{i=1}^{N_T}J_i^2\big]=\lambda T(\mu_J^2+\sigma_J^2)$.
+> La diferencia $K^{QV}-\sigma^2=\lambda(\mu_J^2+\sigma_J^2)$, multiplicada por el horizonte $T$, representa exactamente la **varianza de evento** asociada al anuncio de earnings: $\varepsilon=\mathbb{E}\big[\sum_{i=1}^{N_T}J_i^2\big]=\lambda T(\mu_J^2+\sigma_J^2)$. Adicionalmente, el tamaño promedio del salto se calcula elevado al cuadrado porque un choque tanto al alza como a la baja representa un aumento en la varianza del contrato.
 
 ### La tira de opciones
 
