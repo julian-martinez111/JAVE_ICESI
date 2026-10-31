@@ -611,10 +611,16 @@ $$
 
 Repetimos el análisis de Merton: comparamos lo que **paga** el contrato con lo que **replica** la tira de opciones. Todo es igual, solo que $\sigma^2$ se reemplaza por $v_t$.
 
-**Lo que paga el contrato.** Al elevar (18) al cuadrado con las reglas de la nota, la variación cuadrática es $[X]_T=\int_0^Tv_t\,dt+\sum_{i=1}^{N_T}J_i^2$. Su esperanza, con (15), $\mathbb{E}[N_T]=\lambda T$ y $\mathbb{E}[J^2]=\mu_J^2+\sigma_J^2$, es
+**Lo que paga el contrato.** Al elevar (18) al cuadrado con las reglas de la nota, la variación cuadrática es
 
 $$
-\boxed{K^{QV}_B=\bar v(T)+\lambda\,(\mu_J^2+\sigma_J^2)} \tag{22}
+[X]_T = \int_0^T v_t dt + \sum_{i=1}^{N_T} J_i^2
+$$
+
+Su esperanza, con (15), $\mathbb{E}[N_T] = \lambda T$ y $\mathbb{E}[J^2] = \mu_J^2 + \sigma_J^2$, es
+
+$$
+K_B^{QV} = \bar{v}(T) + \lambda (\mu_J^2 + \sigma_J^2) \tag{22}
 $$
 
 **Lo que replica la tira de opciones.** Como en Merton, Carr–Madan es una identidad válida con saltos y $\mathbb{E}[\int dS_t/S_{t^-}]=rT$ se mantiene gracias al compensador. Restando (16) y (18) se obtiene $\frac{dS_t}{S_{t^-}}-d\ln S_t=\frac12v_t\,dt+(e^{J}-1-J)\,dN_t$, y al integrar y tomar esperanza:
@@ -631,9 +637,9 @@ $$
 \boxed{K^{\text{repl}}_B-K^{QV}_B=2\lambda\,\mathbb{E}\Big[e^{J}-1-J-\tfrac12J^2\Big]\approx\frac{\lambda}{3}\,\mathbb{E}[J^3]} \tag{24}
 $$
 
-Es el mismo resultado de la sección 1 y de Merton. La conclusión es que **la volatilidad estocástica, por sí sola, no genera sesgo de replicación**: en un Heston puro las trayectorias son continuas y $K^{QV}_H=K^{\text{repl}}_H=\bar v(T)$. El sesgo viene únicamente de los saltos.
+Es el mismo resultado de la sección 1 y de Merton. La conclusión es que **la volatilidad estocástica, por sí sola, no genera sesgo de replicación**: en un modelo de Heston las trayectorias son continuas y $K^{QV}_H=K^{\text{repl}}_H=\bar v(T)$. El sesgo viene únicamente de los saltos.
 
-**Resumen de los cuatro modelos:**
+## **Conclusiones y resumen de los cuatro modelos:**
 
 | Modelo | $K^{QV}$ | $K^{\text{repl}}$ |
 |--------|----------|-------------------|
@@ -642,45 +648,9 @@ Es el mismo resultado de la sección 1 y de Merton. La conclusión es que **la v
 | Heston | $\bar v(T)$ | $\bar v(T)$ |
 | Bates | $\bar v(T)+\lambda(\mu_J^2+\sigma_J^2)$ | $\bar v(T)+2\lambda(k-\mu_J)$ |
 
-> **Relevancia para la investigación:**
-> En la práctica los parámetros de salto calibrados serán distintos en Merton y en Bates, porque parte del *smile* que Merton explica con saltos grandes puede quedar absorbida por $\rho$ y $\xi$ en Bates. Por eso lo relevante no es solo cuánto cambia $K$, sino **cuánto del $K$ viene de los saltos** en cada modelo: $2\lambda(k-\mu_J)/K^{\text{repl}}$.
-
-**Ejemplo numérico** (parámetros sintéticos: $T=7/252$, $\kappa=3$, $\theta=0.09$, $\xi=0.5$, $\rho=-0.6$, y saltos $\lambda=36$, $\mu_J=-1\%$, $\sigma_J=6\%$, de modo que $\lambda T=1$). Variamos solo $v_0$; los valores de $K^{\text{repl}}_B$ coinciden, con error relativo del orden de $10^{-6}$, con la integral (4) evaluada sobre precios de Fourier calculados con (21):
-
-| $v_0$ | $\bar v(T)$ | $K^{\text{repl}}_B$ | $K^{QV}_B$ |
-|:-----:|:-----------:|:-------------------:|:----------:|
-| 0.06 | 0.0612 | 0.1932 | 0.1944 |
-| 0.09 | 0.0900 | 0.2220 | 0.2232 |
-| 0.12 | 0.1188 | 0.2508 | 0.2520 |
-
-Dos observaciones: la brecha $K^{QV}_B-K^{\text{repl}}_B\approx0.0012$ es **igual en las tres filas** (solo depende de los saltos, como dice (24)); y la fila $v_0=\theta$ coincide con Merton con $\sigma^2=0.09$ y los mismos saltos.
-
-Además, a 7 días la reversión a la media casi no actúa: $\bar v(T)\approx v_0+\tfrac{\kappa(\theta-v_0)}{2}T$, y el peso de $v_0-\theta$ en (15) es $0.96$ a 7 días frente a $0.32$ a un año. Es decir, en near-expiry la parte continua del *strike* es casi $v_0$, y por eso $\kappa$ y $\theta$ quedan mal identificados con un solo vencimiento corto.
+En la práctica, los parámetros de salto calibrados serán distintos en Merton y en Bates, porque parte del *smile* que Merton explica con saltos grandes puede quedar absorbida por $\rho$ y $\xi$ en Bates. Por eso lo relevante no es solo cuánto cambia $K$, sino **cuánto del $K$ viene de los saltos** en cada modelo: $2\lambda(k-\mu_J)/K^{\text{repl}}$.Bates solo explica una caída gradual de la varianza (vía reversión a $\theta$). Para reproducir el *vol crush* se necesitan parámetros que dependan del tiempo, por ejemplo una intensidad $\lambda(t)$ concentrada en $\tau$ o un reajuste de $v_t$ en esa fecha. Eso se desarrolla en la sección del evento de *earnings*.
 
 ---
-
-> **Relevancia para la investigación:**
-> Un Bates homogéneo solo explica una caída gradual de la varianza (vía reversión a $\theta$). Para reproducir el *vol crush* se necesitan parámetros que dependan del tiempo, por ejemplo una intensidad $\lambda(t)$ concentrada en $\tau$ o un reajuste de $v_t$ en esa fecha. Eso se desarrolla en la sección del evento de *earnings*.
-
----
-
-## Importancia en la investigación y límites del modelo
-
-**Qué aporta:**
-
-* Separar volatilidad estocástica y saltos, gracias a la tabla de los cuatro modelos y al experimento anidado.
-* Dejar claro que el sesgo de replicación (24) viene solo de los saltos, así que un error de pricing de Bates frente al mercado no se puede atribuir a la volatilidad estocástica por sí misma.
-* Conectar con la varianza *forward* de la sección 1 a través de (25) y (26).
-
-**Límites:**
-
-* **Identificación:** 8 parámetros y un vencimiento corto; $\kappa$ y $\theta$ casi no influyen a 7 días, así que hay que calibrar varios vencimientos a la vez o fijar algunos parámetros.
-* **Un solo salto gaussiano:** igual que Merton, no reproduce densidades bimodales ni curvas de volatilidad implícita cóncavas observadas antes de algunos anuncios (Alexiou, Goyal, Kostakis y Rompolis, 2025; Kachhara, Markin y Singh, 2023).
-* **Parámetros constantes en el tiempo:** impiden reproducir el escalón y el *vol crush*, como se vio en (25).
-* **Saltos independientes de la varianza:** un salto no modifica la varianza posterior. Los modelos con saltos también en $v_t$ (Duffie, Pan y Singleton, 2000; Eraker, Johannes y Polson, 2003) relajan esto, pero tienden a generar alzas de varianza, no colapsos.
-
-
-
 
 ### 5. Modelar el evento de earnings y el vol crush
 
