@@ -422,7 +422,7 @@ $$
 e^{-\lambda T}\frac{(\lambda T)^n}{n!}\,e^{-\lambda kT}(1+k)^n=\frac{e^{-\lambda' T}(\lambda' T)^n}{n!},\qquad \lambda'=\lambda(1+k).
 $$
 
-De este desarrollo surge la elegante serie analítica de Merton para opciones europeas:
+De este desarrollo surge la serie analítica de Merton para opciones europeas:
 
 $$
 \boxed{C_M(K)=\sum_{n=0}^{\infty}\frac{e^{-\lambda' T}(\lambda' T)^n}{n!}\;C_{BS}\big(S_0,K,T,\sigma_n,r_n\big)} \tag{9}
